@@ -17,7 +17,7 @@ class LevelTest extends TestCase
 
         $this->assertInstanceOf(Attribute::class, $level);
         $this->assertSame('level', $level->key());
-        $this->assertSame('CRITICAL', $level->value());
+        $this->assertSame('critical', $level->value());
     }
 
     /**

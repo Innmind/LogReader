@@ -15,11 +15,11 @@ final class Level implements Attribute
 
     public function __construct(string $value)
     {
-        if (!defined(LogLevel::class.'::'.$value)) {
+        if (!defined($level = LogLevel::class.'::'.$value)) {
             throw new LogicException;
         }
 
-        $this->value = $value;
+        $this->value = constant($level);
     }
 
     public function key(): string
