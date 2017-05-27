@@ -8,7 +8,7 @@
 
 Allow you to parse symfony and apache access logs.
 
-** BEWARE, it can take a lot of time depending on the amount of data** (For a typical symfony `dev.log` it starts to really slow down after 10k lines)
+**BEWARE, it can take a lot of time depending on the amount of data** (For a typical symfony `dev.log` it starts to really slow down after 10k lines)
 
 ## Installation
 
