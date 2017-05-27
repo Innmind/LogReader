@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Reader;
+namespace Innmind\LogReader\Reader\LineParser;
 
 use Innmind\LogReader\{
-    Reader,
+    Reader\LineParser,
     Log,
     Log\Attribute,
     Log\Attribute\Symfony\Channel,
@@ -12,17 +12,14 @@ use Innmind\LogReader\{
     Log\Attribute\Symfony\Message
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
-use Innmind\Filesystem\FileInterface;
 use Innmind\Immutable\{
-    StreamInterface,
-    Stream,
-    Map,
-    Str
+    Str,
+    Map
 };
 
-final class Symfony implements Reader
+final class Symfony implements LineParser
 {
-    private const FORMAT = '~^\[(?P<time>.+)\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~';
+    private const FORMAT = '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~';
 
     private $clock;
     private $format;
@@ -35,40 +32,7 @@ final class Symfony implements Reader
         $this->format = $format ?? self::FORMAT;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse(FileInterface $file): StreamInterface
-    {
-        $content = $file->content();
-        $stream = new Stream(Log::class);
-        $line = new Str('');
-
-        while (!$content->isEof()) {
-            $line = $line->append($content->read(8192));
-
-            $splits = $line->split("\n");
-
-            if ($splits->size() > 2) {
-                $line = $splits->last();
-                $stream = $splits
-                    ->dropEnd(1)
-                    ->filter(function(Str $line): bool {
-                        return $line->matches($this->format);
-                    })
-                    ->reduce(
-                        $stream,
-                        function(Stream $stream, Str $line): Stream {
-                            return $stream->add($this->read($line));
-                        }
-                    );
-            }
-        }
-
-        return $stream;
-    }
-
-    private function read(Str $line): Log
+    public function __invoke(Str $line): Log
     {
         $parts = $line->capture($this->format);
 

@@ -20,13 +20,14 @@ class LogTest extends TestCase
     {
         $log = new Log(
             $time = $this->createMock(PointInTimeInterface::class),
-            $raw = new Str(''),
+            $raw = new Str('foo'),
             $attributes = new Map('string', Attribute::class)
         );
 
         $this->assertSame($time, $log->time());
         $this->assertSame($raw, $log->raw());
         $this->assertSame($attributes, $log->attributes());
+        $this->assertSame('foo', (string) $log);
     }
 
     /**
