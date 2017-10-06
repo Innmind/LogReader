@@ -21,7 +21,7 @@ class LevelTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\LogicException
+     * @expectedException Innmind\LogReader\Exception\DomainException
      */
     public function testThrowWhenUnknownLevel()
     {

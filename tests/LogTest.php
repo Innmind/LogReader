@@ -31,7 +31,8 @@ class LogTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\InvalidAttributes
+     * @expectedException TypeError
+     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
      */
     public function testThrowWhenInvalidAttributesKeys()
     {
@@ -43,7 +44,8 @@ class LogTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\InvalidAttributes
+     * @expectedException TypeError
+     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
      */
     public function testThrowWhenInvalidAttributesValues()
     {

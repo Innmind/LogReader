@@ -5,7 +5,7 @@ namespace Innmind\LogReader\Log\Attribute\Symfony;
 
 use Innmind\LogReader\{
     Log\Attribute,
-    Exception\LogicException
+    Exception\DomainException
 };
 use Psr\Log\LogLevel;
 
@@ -16,7 +16,7 @@ final class Level implements Attribute
     public function __construct(string $value)
     {
         if (!defined($level = LogLevel::class.'::'.$value)) {
-            throw new LogicException;
+            throw new DomainException;
         }
 
         $this->value = constant($level);

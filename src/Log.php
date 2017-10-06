@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader;
 
-use Innmind\LogReader\{
-    Log\Attribute,
-    Exception\InvalidAttributes
-};
+use Innmind\LogReader\Log\Attribute;
 use Innmind\TimeContinuum\PointInTimeInterface;
 use Innmind\Immutable\{
     Str,
@@ -28,7 +25,10 @@ final class Log
             (string) $attributes->keyType() !== 'string' ||
             (string) $attributes->valueType() !== Attribute::class
         ) {
-            throw new InvalidAttributes;
+            throw new \TypeError(sprintf(
+                'Argument 3 must be of type MapInterface<string, %s>',
+                Attribute::class
+            ));
         }
 
         $this->time = $time;
