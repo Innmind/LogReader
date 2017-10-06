@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader,
     Log\Stream
 };
-use Innmind\Filesystem\FileInterface;
+use Innmind\Filesystem\File;
 use Innmind\Immutable\{
     StreamInterface,
     Str
@@ -29,14 +29,14 @@ final class OnDemand implements Reader
     /**
      * {@inheritdoc}
      */
-    public function parse(FileInterface $file): StreamInterface
+    public function parse(File $file): StreamInterface
     {
-        return new Stream((function(FileInterface $file) {
+        return new Stream((function(File $file) {
             $content = $file->content();
             $line = new Str('');
 
-            while (!$content->isEof()) {
-                $line = $line->append($content->read(8192));
+            while (!$content->end()) {
+                $line = $line->append((string) $content->read(8192));
                 $splits = $line->split("\n");
 
                 if ($splits->size() > 2) {

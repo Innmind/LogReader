@@ -14,9 +14,9 @@ use Innmind\Url\{
     Authority\Host
 };
 use Innmind\Http\{
-    ProtocolVersion,
-    Message\Method,
-    Message\StatusCode
+    ProtocolVersion\ProtocolVersion,
+    Message\Method\Method,
+    Message\StatusCode\StatusCode
 };
 use Innmind\Immutable\{
     Str,

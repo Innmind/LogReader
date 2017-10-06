@@ -11,10 +11,8 @@ use Innmind\LogReader\{
     Log\Stream as OnDemandStream
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\{
-    File,
-    Stream\Stream
-};
+use Innmind\Filesystem\File\File;
+use Innmind\Stream\Readable\Stream;
 use PHPUnit\Framework\TestCase;
 
 class OnDemandTest extends TestCase
@@ -32,7 +30,7 @@ class OnDemandTest extends TestCase
         $reader = new OnDemand(new Symfony(new Earth));
         $file = new File(
             'symfony.log',
-            Stream::fromPath('fixtures/symfony.log')
+            new Stream(fopen('fixtures/symfony.log', 'r'))
         );
 
         $stream = $reader->parse($file);

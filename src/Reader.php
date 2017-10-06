@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader;
 
-use Innmind\Filesystem\FileInterface;
+use Innmind\Filesystem\File;
 use Innmind\Immutable\StreamInterface;
 
 interface Reader
@@ -11,5 +11,5 @@ interface Reader
     /**
      * @return StreamInterface<Log>
      */
-    public function parse(FileInterface $file): StreamInterface;
+    public function parse(File $file): StreamInterface;
 }
