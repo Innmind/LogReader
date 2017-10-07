@@ -9,6 +9,7 @@ use Innmind\LogReader\{
     Log\Attribute
 };
 use Innmind\TimeContinuum\PointInTime\Earth\Now;
+use Innmind\Filesystem\File;
 use Innmind\Immutable\{
     StreamInterface,
     Str,
@@ -25,7 +26,7 @@ class StreamTest extends TestCase
 
     public function setUp()
     {
-        $this->stream = new Stream($this->generator = (function() {
+        $this->stream = new Stream($this->generator = function() {
             $i = 0;
             while ($i < 10) {
                 yield new Log(
@@ -35,7 +36,7 @@ class StreamTest extends TestCase
                 );
                 ++$i;
             }
-        })());
+        }, $this->createMock(File::class));
     }
 
     public function testInterface()
@@ -54,39 +55,15 @@ class StreamTest extends TestCase
 
     public function testIterator()
     {
-        $this->assertSame('0', (string) $this->stream->current());
-        $this->assertSame(0, $this->stream->key());
-        $this->assertSame(0, $this->generator->key());
-        $this->assertTrue($this->stream->valid());
-        $this->assertNull($this->stream->next());
-        $this->assertSame('1', (string) $this->stream->current());
-        $this->assertSame(1, $this->stream->key());
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->stream->next();
-        $this->assertSame(1, $this->generator->key());
-        $this->assertSame(9, $this->stream->key());
-        $this->assertSame(9, $this->generator->key());
-        $this->stream->next();
-        $this->assertFalse($this->stream->valid());
-        $this->assertFalse($this->generator->valid());
-        $this->assertNull($this->stream->rewind());
-        $this->assertTrue($this->stream->valid());
-        $this->assertSame('0', (string) $this->stream->current());
-        $this->assertSame(0, $this->stream->key());
+        $this->stream->rewind();
+        $count = 0;
+
+        foreach ($this->stream as $key => $log) {
+            $this->assertSame((string) $key, (string) $log);
+            ++$count;
+        }
+
+        $this->assertSame(10, $count);
     }
 
     public function testGet()
@@ -140,7 +117,8 @@ class StreamTest extends TestCase
 
     public function testEquals()
     {
-        $this->assertTrue($this->stream->equals($this->stream));
+        //always false as we rewalk the full file each time
+        $this->assertFalse($this->stream->equals($this->stream));
         $this->assertFalse($this->stream->equals($this->stream->clear()));
     }
 
@@ -203,7 +181,8 @@ class StreamTest extends TestCase
 
     public function testLog()
     {
-        $this->assertTrue($this->stream->contains($this->stream->get(2)));
+        //file rewalked every time
+        $this->assertFalse($this->stream->contains($this->stream->get(2)));
         $this->assertFalse($this->stream->contains(new Log(
             new Now,
             new Str(''),
@@ -211,12 +190,13 @@ class StreamTest extends TestCase
         )));
     }
 
+    /**
+     * @expectedException Innmind\Immutable\Exception\ElementNotFoundException
+     */
     public function testIndexOf()
     {
-        $this->assertSame(
-            2,
-            $this->stream->indexOf($this->stream->get(2))
-        );
+        //throws because the file is rewalked each time
+        $this->stream->indexOf($this->stream->get(2));
     }
 
     public function testIndices()
@@ -307,11 +287,9 @@ class StreamTest extends TestCase
     public function testIntersect()
     {
         $this->assertCount(0, $this->stream->intersect($this->stream->clear()));
-        $this->assertTrue(
-            $this
-                ->stream
-                ->intersect($this->stream)
-                ->equals($this->stream)
+        $this->assertSame(
+            $this->stream->intersect($this->stream)->size(),
+            $this->stream->size()
         );
     }
 
@@ -387,7 +365,8 @@ class StreamTest extends TestCase
 
     public function testPrimitive()
     {
-        $this->assertSame(
+        //file rewalked every time
+        $this->assertNotSame(
             [
                 $this->stream->get(0),
                 $this->stream->get(1),
@@ -407,7 +386,8 @@ class StreamTest extends TestCase
     public function testArrayAccess()
     {
         $this->assertTrue(isset($this->stream[2]));
-        $this->assertSame($this->stream->get(2), $this->stream[2]);
+        //file rewalked each time
+        $this->assertNotSame($this->stream->get(2), $this->stream[2]);
     }
 
     /**

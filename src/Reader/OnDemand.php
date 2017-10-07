@@ -31,7 +31,7 @@ final class OnDemand implements Reader
      */
     public function parse(File $file): StreamInterface
     {
-        return new Stream((function(File $file) {
+        return new Stream(function(File $file) {
             $content = $file->content();
             $line = new Str('');
 
@@ -48,6 +48,6 @@ final class OnDemand implements Reader
                     }
                 }
             }
-        })($file));
+        }, $file);
     }
 }
