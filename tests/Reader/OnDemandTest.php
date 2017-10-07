@@ -38,5 +38,9 @@ class OnDemandTest extends TestCase
         $this->assertInstanceOf(OnDemandStream::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());
         $this->assertCount(5000, $stream);
+        $this->assertSame(
+            'User Deprecated: Use Str class instead',
+            $stream->last()->attributes()->get('message')->value()
+        );
     }
 }

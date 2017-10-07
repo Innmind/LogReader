@@ -8,10 +8,7 @@ use Innmind\LogReader\{
     Log\Stream
 };
 use Innmind\Filesystem\File;
-use Innmind\Immutable\{
-    StreamInterface,
-    Str
-};
+use Innmind\Immutable\StreamInterface;
 
 /**
  * Use a generator that will parse the file only when you'll manipulate the
@@ -33,20 +30,16 @@ final class OnDemand implements Reader
     {
         return new Stream(function(File $file) {
             $content = $file->content();
-            $line = new Str('');
+            $content->rewind();
 
             while (!$content->end()) {
-                $line = $line->append((string) $content->read(8192));
-                $splits = $line->split("\n");
+                $line = $content->readLine();
 
-                if ($splits->size() > 2) {
-                    $line = $splits->last();
-                    $lines = $splits->dropEnd(1);
-
-                    foreach ($lines as $line) {
-                        yield ($this->parse)($line);
-                    }
+                if ($line->length() === 0) {
+                    continue;
                 }
+
+                yield ($this->parse)($line);
             }
         }, $file);
     }
