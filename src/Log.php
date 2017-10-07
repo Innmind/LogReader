@@ -54,6 +54,11 @@ final class Log
         return $this->attributes;
     }
 
+    public function equals(self $log): bool
+    {
+        return $this->raw->equals($log->raw());
+    }
+
     public function __toString(): string
     {
         return (string) $this->raw;

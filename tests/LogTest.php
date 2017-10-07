@@ -55,4 +55,21 @@ class LogTest extends TestCase
             new Map('string', 'string')
         );
     }
+
+    public function testEquals()
+    {
+        $log = new Log(
+            $this->createMock(PointInTimeInterface::class),
+            new Str('foo'),
+            new Map('string', Attribute::class)
+        );
+        $log2 = new Log(
+            $this->createMock(PointInTimeInterface::class),
+            new Str('bar'),
+            new Map('string', Attribute::class)
+        );
+
+        $this->assertTrue($log->equals($log));
+        $this->assertFalse($log->equals($log2));
+    }
 }
