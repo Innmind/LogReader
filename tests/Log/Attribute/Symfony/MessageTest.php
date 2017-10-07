@@ -21,7 +21,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\LogicException
+     * @expectedException Innmind\LogReader\Exception\DomainException
      */
     public function testThrowWhenEmptyMessage()
     {

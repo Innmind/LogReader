@@ -31,7 +31,8 @@ class LogTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\InvalidAttributes
+     * @expectedException TypeError
+     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
      */
     public function testThrowWhenInvalidAttributesKeys()
     {
@@ -43,7 +44,8 @@ class LogTest extends TestCase
     }
 
     /**
-     * @expectedException Innmind\LogReader\Exception\InvalidAttributes
+     * @expectedException TypeError
+     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
      */
     public function testThrowWhenInvalidAttributesValues()
     {
@@ -52,5 +54,22 @@ class LogTest extends TestCase
             new Str(''),
             new Map('string', 'string')
         );
+    }
+
+    public function testEquals()
+    {
+        $log = new Log(
+            $this->createMock(PointInTimeInterface::class),
+            new Str('foo'),
+            new Map('string', Attribute::class)
+        );
+        $log2 = new Log(
+            $this->createMock(PointInTimeInterface::class),
+            new Str('bar'),
+            new Map('string', Attribute::class)
+        );
+
+        $this->assertTrue($log->equals($log));
+        $this->assertFalse($log->equals($log2));
     }
 }

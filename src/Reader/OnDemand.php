@@ -7,11 +7,8 @@ use Innmind\LogReader\{
     Reader,
     Log\Stream
 };
-use Innmind\Filesystem\FileInterface;
-use Innmind\Immutable\{
-    StreamInterface,
-    Str
-};
+use Innmind\Filesystem\File;
+use Innmind\Immutable\StreamInterface;
 
 /**
  * Use a generator that will parse the file only when you'll manipulate the
@@ -29,25 +26,21 @@ final class OnDemand implements Reader
     /**
      * {@inheritdoc}
      */
-    public function parse(FileInterface $file): StreamInterface
+    public function parse(File $file): StreamInterface
     {
-        return new Stream((function(FileInterface $file) {
+        return new Stream(function(File $file) {
             $content = $file->content();
-            $line = new Str('');
+            $content->rewind();
 
-            while (!$content->isEof()) {
-                $line = $line->append($content->read(8192));
-                $splits = $line->split("\n");
+            while (!$content->end()) {
+                $line = $content->readLine();
 
-                if ($splits->size() > 2) {
-                    $line = $splits->last();
-                    $lines = $splits->dropEnd(1);
-
-                    foreach ($lines as $line) {
-                        yield ($this->parse)($line);
-                    }
+                if ($line->length() === 0) {
+                    continue;
                 }
+
+                yield ($this->parse)($line);
             }
-        })($file));
+        }, $file);
     }
 }

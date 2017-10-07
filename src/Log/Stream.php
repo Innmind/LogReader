@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\LogReader\Log;
 
 use Innmind\LogReader\Log;
+use Innmind\Filesystem\File;
 use Innmind\Immutable\{
     StreamInterface,
     Stream as GenericStream,
@@ -15,17 +16,18 @@ use Innmind\Immutable\{
 
 final class Stream implements StreamInterface
 {
+    private $walk;
+    private $file;
     private $generator;
     private $type;
-    private $logs;
     private $cursor = 0;
 
-    public function __construct(\Generator $generator)
+    public function __construct(callable $walker, File $file)
     {
-        $this->generator = $generator;
+        $this->walk = $walker;
+        $this->file = $file;
         $this->type = new Str(Log::class);
-        $this->logs = (new GenericStream(Log::class))
-            ->add($generator->current());
+        $this->rewind();
     }
 
     /**
@@ -41,10 +43,6 @@ final class Stream implements StreamInterface
      */
     public function get(int $index): Log
     {
-        if ($this->logs->contains($index)) {
-            return $this->logs->get($index);
-        }
-
         $this->rewind();
 
         while ($this->valid()) {
@@ -179,10 +177,6 @@ final class Stream implements StreamInterface
      */
     public function indices(): StreamInterface
     {
-        if ($this->loaded()) {
-            return $this->logs->indices();
-        }
-
         $indices = new GenericStream('int');
 
         if ($this->size() === 0) {
@@ -340,36 +334,26 @@ final class Stream implements StreamInterface
 
     public function current(): Log
     {
-        $this->sync();
-
-        return $this->logs->get($this->cursor);
+        return $this->generator->current();
     }
 
     public function key(): int
     {
-        $this->sync();
-
-        return $this->cursor;
+        return $this->generator->key();
     }
 
     public function next(): void
     {
-        ++$this->cursor;
+        $this->generator->next();
     }
 
     public function rewind(): void
     {
-        $this->cursor = 0;
+        $this->generator = ($this->walk)($this->file);
     }
 
     public function valid(): bool
     {
-        if ($this->loaded()) {
-            return $this->logs->offsetExists($this->cursor);
-        }
-
-        $this->sync();
-
         return $this->generator->valid();
     }
 
@@ -407,54 +391,13 @@ final class Stream implements StreamInterface
 
     private function logs(): StreamInterface
     {
-        if ($this->loaded()) {
-            return $this->logs;
+        $logs = new GenericStream(Log::class);
+        $generator = ($this->walk)($this->file);
+
+        foreach ($generator as $log) {
+            $logs = $logs->add($log);
         }
 
-        $cursor = $this->cursor;
-
-        while (!$this->loaded()) {
-            $this->next();
-            $this->sync();
-        }
-
-        $this->cursor = $cursor;
-
-        return $this->logs;
-    }
-
-    private function loaded(): bool
-    {
-        return !$this->generator->valid();
-    }
-
-    private function synced(): bool
-    {
-        if ($this->loaded()) {
-            return true;
-        }
-
-        try {
-            $this->logs->get($this->cursor);
-
-            return true;
-        } catch (OutOfBoundException $e) {
-            return false;
-        }
-    }
-
-    private function sync(): void
-    {
-        if ($this->synced()) {
-            return;
-        }
-
-        while (!$this->synced()) {
-            $this->generator->next();
-
-            if ($this->generator->valid()) {
-                $this->logs = $this->logs->add($this->generator->current());
-            }
-        }
+        return $logs;
     }
 }

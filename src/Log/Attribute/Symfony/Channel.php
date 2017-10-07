@@ -5,7 +5,7 @@ namespace Innmind\LogReader\Log\Attribute\Symfony;
 
 use Innmind\LogReader\{
     Log\Attribute,
-    Exception\LogicException
+    Exception\DomainException
 };
 
 final class Channel implements Attribute
@@ -15,7 +15,7 @@ final class Channel implements Attribute
     public function __construct(string $value)
     {
         if (empty($value)) {
-            throw new LogicException;
+            throw new DomainException;
         }
 
         $this->value = $value;

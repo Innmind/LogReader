@@ -14,9 +14,9 @@ use Innmind\TimeContinuum\{
     Format\ISO8601
 };
 use Innmind\Http\{
-    Message\MethodInterface,
-    Message\StatusCodeInterface,
-    ProtocolVersionInterface
+    Message\Method,
+    Message\StatusCode,
+    ProtocolVersion
 };
 use Innmind\Url\{
     UrlInterface,
@@ -55,12 +55,17 @@ class ApacheAccessTest extends TestCase
         );
         $this->assertSame($path, (string) $log->attributes()->get('path')->value());
         $this->assertInstanceOf(
-            ProtocolVersionInterface::class,
+            Method::class,
+            $log->attributes()->get('method')->value()
+        );
+        $this->assertSame($method, (string) $log->attributes()->get('method')->value());
+        $this->assertInstanceOf(
+            ProtocolVersion::class,
             $log->attributes()->get('protocol')->value()
         );
         $this->assertSame($protocol, (string) $log->attributes()->get('protocol')->value());
         $this->assertInstanceOf(
-            StatusCodeInterface::class,
+            StatusCode::class,
             $log->attributes()->get('code')->value()
         );
         $this->assertSame($code, (string) $log->attributes()->get('code')->value());

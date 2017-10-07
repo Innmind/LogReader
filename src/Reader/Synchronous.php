@@ -7,11 +7,10 @@ use Innmind\LogReader\{
     Reader,
     Log
 };
-use Innmind\Filesystem\FileInterface;
+use Innmind\Filesystem\File;
 use Innmind\Immutable\{
     StreamInterface,
-    Stream,
-    Str
+    Stream
 };
 
 /**
@@ -29,24 +28,20 @@ final class Synchronous implements Reader
     /**
      * {@inheritdoc}
      */
-    public function parse(FileInterface $file): StreamInterface
+    public function parse(File $file): StreamInterface
     {
         $content = $file->content();
-        $line = new Str('');
+        $content->rewind();
         $stream = new Stream(Log::class);
 
-        while (!$content->isEof()) {
-            $line = $line->append($content->read(8192));
-            $splits = $line->split("\n");
+        while (!$content->end()) {
+            $line = $content->readLine();
 
-            if ($splits->size() > 2) {
-                $line = $splits->last();
-                $lines = $splits->dropEnd(1);
-
-                foreach ($lines as $line) {
-                    $stream = $stream->add(($this->parse)($line));
-                }
+            if ($line->length() === 0) {
+                continue;
             }
+
+            $stream = $stream->add(($this->parse)($line));
         }
 
         return $stream;
