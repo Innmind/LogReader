@@ -4996,5 +4996,5 @@
 [2017-02-08 07:01:05] php.INFO: User Deprecated: Use Str class instead {"exception":"[object] (ErrorException(code: 0): User Deprecated: Use Str class instead at /Users/baptouuuu/Sites/Innmind/API/vendor/innmind/immutable/src/StringPrimitive.php:31)"} []
 [2017-02-08 07:01:05] php.INFO: User Deprecated: Use Str class instead {"exception":"[object] (ErrorException(code: 0): User Deprecated: Use Str class instead at /Users/baptouuuu/Sites/Innmind/API/vendor/innmind/immutable/src/StringPrimitive.php:31)"} []
 [2017-02-08 07:01:05] php.INFO: User Deprecated: Use Str class instead {"exception":"[object] (ErrorException(code: 0): User Deprecated: Use Str class instead at /Users/baptouuuu/Sites/Innmind/API/vendor/innmind/immutable/src/StringPrimitive.php:31)"} []
-[2017-02-08 07:01:05] php.INFO: User Deprecated: Use Str class instead {"exception":"[object] (ErrorException(code: 0): User Deprecated: Use Str class instead at /Users/baptouuuu/Sites/Innmind/API/vendor/innmind/immutable/src/StringPrimitive.php:31)"} []
+[2017-10-12 17:01:27] amqp.DEBUG: AMQP frame about to be sent  []
 [2017-02-08 07:01:05] php.INFO: User Deprecated: Use Str class instead {"exception":"[object] (ErrorException(code: 0): User Deprecated: Use Str class instead at /Users/baptouuuu/Sites/Innmind/API/vendor/innmind/immutable/src/StringPrimitive.php:31)"} []
