@@ -259,6 +259,10 @@ final class Stream implements StreamInterface
      */
     public function intersect(StreamInterface $stream): StreamInterface
     {
+        if ($stream === $this) {
+            return $this;
+        }
+
         return $this->logs()->intersect($stream);
     }
 
