@@ -41,18 +41,18 @@ final class Symfony implements LineParser
         return new Log(
             $this->clock->at((string) $parts->get('time')),
             $line,
-            (new Map('string', Attribute::class))
-                ->put('channel', new Channel((string) $parts->get('channel')))
-                ->put('level', new Level((string) $parts->get('level')))
-                ->put('message', new Message((string) $parts->get('message')))
-                ->put(
+            Map::of('string', Attribute::class)
+                ('channel', new Channel((string) $parts->get('channel')))
+                ('level', new Level((string) $parts->get('level')))
+                ('message', new Message((string) $parts->get('message')))
+                (
                     'context',
                     new Attribute\Attribute(
                         'context',
                         json_decode((string) $parts->get('context'), true)
                     )
                 )
-                ->put(
+                (
                     'extra',
                     new Attribute\Attribute(
                         'extra',
