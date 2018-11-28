@@ -27,13 +27,13 @@ class SynchronousTest extends TestCase
 
     public function testParse()
     {
-        $reader = new Synchronous(new Symfony(new Earth));
+        $read = new Synchronous(new Symfony(new Earth));
         $file = new File(
             'symfony.log',
             new Stream(fopen('fixtures/symfony.log', 'r'))
         );
 
-        $stream = $reader->parse($file);
+        $stream = $read($file);
 
         $this->assertInstanceOf(StaticStream::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());

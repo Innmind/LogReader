@@ -28,7 +28,7 @@ final class Synchronous implements Reader
     /**
      * {@inheritdoc}
      */
-    public function parse(File $file): StreamInterface
+    public function __invoke(File $file): StreamInterface
     {
         $content = $file->content();
         $content->rewind();

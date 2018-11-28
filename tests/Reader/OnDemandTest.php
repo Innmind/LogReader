@@ -27,13 +27,13 @@ class OnDemandTest extends TestCase
 
     public function testParse()
     {
-        $reader = new OnDemand(new Symfony(new Earth));
+        $read = new OnDemand(new Symfony(new Earth));
         $file = new File(
             'symfony.log',
             new Stream(fopen('fixtures/symfony.log', 'r'))
         );
 
-        $stream = $reader->parse($file);
+        $stream = $read($file);
 
         $this->assertInstanceOf(OnDemandStream::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());

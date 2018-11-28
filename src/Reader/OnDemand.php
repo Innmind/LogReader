@@ -26,7 +26,7 @@ final class OnDemand implements Reader
     /**
      * {@inheritdoc}
      */
-    public function parse(File $file): StreamInterface
+    public function __invoke(File $file): StreamInterface
     {
         return new Stream(function(File $file) {
             $content = $file->content();

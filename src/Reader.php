@@ -11,5 +11,5 @@ interface Reader
     /**
      * @return StreamInterface<Log>
      */
-    public function parse(File $file): StreamInterface;
+    public function __invoke(File $file): StreamInterface;
 }

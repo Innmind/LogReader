@@ -28,12 +28,11 @@ use Innmind\TimeContinuum\TimeContinuum\Earth;
 use Innmind\Filesystem\Adapter\FilesystemAdapter;
 use Psr\Log\LogLevel;
 
-$reader = new Synchronous(
+$read = new Synchronous(
     new Symfony(new Earth)
 );
 $fs = new FilesystemAdapter('var/logs');
-$reader
-    ->parse($fs->get('prod.log'))
+$read($fs->get('prod.log'))
     ->filter(static function(Log $log): bool {
         return $log->attributes()->get('level')->value() === LogLevel::CRITICAL;
     })
