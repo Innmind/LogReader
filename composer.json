@@ -15,7 +15,7 @@
     },
     "require": {
         "php": "~7.1",
-        "innmind/immutable": "^2.3",
+        "innmind/immutable": "^2.11",
         "innmind/time-continuum": "^1.0",
         "psr/log": "^1.0",
         "innmind/filesystem": "^3.0",
