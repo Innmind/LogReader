@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\LogReader\Log;
 
 use Innmind\LogReader\Log;
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\{
     StreamInterface,
     Stream as GenericStream,
@@ -22,7 +22,7 @@ final class Stream implements StreamInterface
     private $type;
     private $cursor = 0;
 
-    public function __construct(callable $walker, File $file)
+    public function __construct(callable $walker, Readable $file)
     {
         $this->walk = $walker;
         $this->file = $file;

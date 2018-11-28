@@ -32,7 +32,7 @@ $read = new Synchronous(
     new Symfony(new Earth)
 );
 $fs = new FilesystemAdapter('var/logs');
-$read($fs->get('prod.log'))
+$read($fs->get('prod.log')->content())
     ->filter(static function(Log $log): bool {
         return $log->attributes()->get('level')->value() === LogLevel::CRITICAL;
     })

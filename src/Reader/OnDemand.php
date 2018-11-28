@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader,
     Log\Stream
 };
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\StreamInterface;
 
 /**
@@ -26,14 +26,13 @@ final class OnDemand implements Reader
     /**
      * {@inheritdoc}
      */
-    public function __invoke(File $file): StreamInterface
+    public function __invoke(Readable $file): StreamInterface
     {
-        return new Stream(function(File $file) {
-            $content = $file->content();
-            $content->rewind();
+        return new Stream(function(Readable $file) {
+            $file->rewind();
 
-            while (!$content->end()) {
-                $line = $content->readLine();
+            while (!$file->end()) {
+                $line = $file->readLine();
 
                 if ($line->length() === 0) {
                     continue;

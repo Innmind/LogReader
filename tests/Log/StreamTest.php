@@ -9,7 +9,7 @@ use Innmind\LogReader\{
     Log\Attribute
 };
 use Innmind\TimeContinuum\PointInTime\Earth\Now;
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\{
     StreamInterface,
     Str,
@@ -36,7 +36,7 @@ class StreamTest extends TestCase
                 );
                 ++$i;
             }
-        }, $this->createMock(File::class));
+        }, $this->createMock(Readable::class));
     }
 
     public function testInterface()

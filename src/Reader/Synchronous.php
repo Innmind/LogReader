@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader,
     Log
 };
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\{
     StreamInterface,
     Stream
@@ -28,14 +28,13 @@ final class Synchronous implements Reader
     /**
      * {@inheritdoc}
      */
-    public function __invoke(File $file): StreamInterface
+    public function __invoke(Readable $file): StreamInterface
     {
-        $content = $file->content();
-        $content->rewind();
+        $file->rewind();
         $stream = new Stream(Log::class);
 
-        while (!$content->end()) {
-            $line = $content->readLine();
+        while (!$file->end()) {
+            $line = $file->readLine();
 
             if ($line->length() === 0) {
                 continue;

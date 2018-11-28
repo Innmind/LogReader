@@ -18,9 +18,9 @@
         "innmind/immutable": "^2.11",
         "innmind/time-continuum": "^1.0",
         "psr/log": "^1.0",
-        "innmind/filesystem": "^3.0",
         "innmind/url": "^2.0",
-        "innmind/http": "^3.0"
+        "innmind/http": "^3.0",
+        "innmind/stream": "^1.4"
     },
     "autoload": {
         "psr-4": {

@@ -11,7 +11,6 @@ use Innmind\LogReader\{
     Log\Stream as OnDemandStream
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\File\File;
 use Innmind\Stream\Readable\Stream;
 use PHPUnit\Framework\TestCase;
 
@@ -28,10 +27,7 @@ class OnDemandTest extends TestCase
     public function testParse()
     {
         $read = new OnDemand(new Symfony(new Earth));
-        $file = new File(
-            'symfony.log',
-            new Stream(fopen('fixtures/symfony.log', 'r'))
-        );
+        $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);
 
