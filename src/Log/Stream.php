@@ -167,7 +167,7 @@ final class Stream implements StreamInterface
      */
     public function last(): Log
     {
-        return $this->get($this->size() - 1);
+        return $this->logs()->last();
     }
 
     /**
