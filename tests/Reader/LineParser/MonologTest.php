@@ -9,12 +9,12 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Monolog\Channel,
     Log\Attribute\Monolog\Level,
-    Log\Attribute\Monolog\Message
+    Log\Attribute\Monolog\Message,
 };
 use Innmind\TimeContinuum\{
     TimeContinuum\Earth,
     Format\ISO8601,
-    Timezone\Earth\UTC
+    Timezone\Earth\UTC,
 };
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\TestCase;

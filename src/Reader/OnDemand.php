@@ -5,7 +5,7 @@ namespace Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader,
-    Log\Stream
+    Log\Stream,
 };
 use Innmind\Stream\Readable;
 use Innmind\Immutable\StreamInterface;

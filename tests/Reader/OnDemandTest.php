@@ -8,7 +8,7 @@ use Innmind\LogReader\{
     Reader\LineParser\Monolog,
     Reader,
     Log,
-    Log\Stream as OnDemandStream
+    Log\Stream as OnDemandStream,
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
 use Innmind\Stream\Readable\Stream;

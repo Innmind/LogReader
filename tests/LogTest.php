@@ -5,12 +5,12 @@ namespace Tests\Innmind\LogReader;
 
 use Innmind\LogReader\{
     Log,
-    Log\Attribute
+    Log\Attribute,
 };
 use Innmind\TimeContinuum\PointInTimeInterface;
 use Innmind\Immutable\{
     Map,
-    Str
+    Str,
 };
 use PHPUnit\Framework\TestCase;
 

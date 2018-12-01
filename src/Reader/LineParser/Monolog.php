@@ -9,14 +9,14 @@ use Innmind\LogReader\{
     Log\Attribute,
     Log\Attribute\Monolog\Channel,
     Log\Attribute\Monolog\Level,
-    Log\Attribute\Monolog\Message
+    Log\Attribute\Monolog\Message,
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
 use Innmind\Json\Json;
 use Innmind\Immutable\{
     Str,
     Map,
-    MapInterface
+    MapInterface,
 };
 
 final class Monolog implements LineParser

@@ -7,7 +7,7 @@ use Innmind\LogReader\Log\Attribute;
 use Innmind\TimeContinuum\PointInTimeInterface;
 use Innmind\Immutable\{
     Str,
-    MapInterface
+    MapInterface,
 };
 
 final class Log

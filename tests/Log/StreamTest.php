@@ -6,7 +6,7 @@ namespace Tests\Innmind\LogReader\Log;
 use Innmind\LogReader\{
     Log\Stream,
     Log,
-    Log\Attribute
+    Log\Attribute,
 };
 use Innmind\TimeContinuum\PointInTime\Earth\Now;
 use Innmind\Stream\Readable;

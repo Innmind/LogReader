@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader\Synchronous,
     Reader\LineParser\Monolog,
     Reader,
-    Log
+    Log,
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
 use Innmind\Stream\Readable\Stream;

@@ -6,21 +6,21 @@ namespace Innmind\LogReader\Reader\LineParser;
 use Innmind\LogReader\{
     Reader\LineParser,
     Log,
-    Log\Attribute
+    Log\Attribute,
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
 use Innmind\Url\{
     Url,
-    Authority\Host
+    Authority\Host,
 };
 use Innmind\Http\{
     ProtocolVersion\ProtocolVersion,
     Message\Method\Method,
-    Message\StatusCode\StatusCode
+    Message\StatusCode\StatusCode,
 };
 use Innmind\Immutable\{
     Str,
-    Map
+    Map,
 };
 
 final class ApacheAccess implements LineParser

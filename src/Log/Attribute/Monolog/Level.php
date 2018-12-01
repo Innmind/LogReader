@@ -5,7 +5,7 @@ namespace Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\{
     Log\Attribute,
-    Exception\DomainException
+    Exception\DomainException,
 };
 use Psr\Log\LogLevel;
 

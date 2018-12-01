@@ -5,7 +5,7 @@ namespace Tests\Innmind\LogReader\Log\Attribute;
 
 use Innmind\LogReader\Log\{
     Attribute\Attribute,
-    Attribute as AttributeInterface
+    Attribute as AttributeInterface,
 };
 use PHPUnit\Framework\TestCase;
 

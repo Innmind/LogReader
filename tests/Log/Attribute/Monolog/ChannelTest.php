@@ -5,7 +5,7 @@ namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\Log\{
     Attribute\Monolog\Channel,
-    Attribute
+    Attribute,
 };
 use PHPUnit\Framework\TestCase;
 

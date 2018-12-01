@@ -11,7 +11,7 @@ use Innmind\Immutable\{
     MapInterface,
     Str,
     Exception\OutOfBoundException,
-    Exception\LogicException
+    Exception\LogicException,
 };
 
 final class Stream implements StreamInterface

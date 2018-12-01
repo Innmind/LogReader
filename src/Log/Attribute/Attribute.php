@@ -5,7 +5,7 @@ namespace Innmind\LogReader\Log\Attribute;
 
 use Innmind\LogReader\{
     Log\Attribute as AttributeInterface,
-    Exception\EmptyAttributeKeyNotAllowed
+    Exception\EmptyAttributeKeyNotAllowed,
 };
 
 final class Attribute implements AttributeInterface
