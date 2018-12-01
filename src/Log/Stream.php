@@ -77,7 +77,18 @@ final class Stream implements StreamInterface
      */
     public function drop(int $size): StreamInterface
     {
-        return $this->logs()->drop($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            if ($this->key() >= $size) {
+                $logs = $logs->add($this->current());
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
@@ -235,7 +246,20 @@ final class Stream implements StreamInterface
      */
     public function take(int $size): StreamInterface
     {
-        return $this->logs()->take($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            $logs = $logs->add($this->current());
+
+            if ($logs->size() === $size) {
+                return $logs;
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
@@ -243,7 +267,20 @@ final class Stream implements StreamInterface
      */
     public function takeEnd(int $size): StreamInterface
     {
-        return $this->logs()->takeEnd($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            $logs = $logs->add($this->current());
+
+            if ($logs->size() > $size) {
+                $logs = $logs->drop(1);
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
