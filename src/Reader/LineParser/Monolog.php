@@ -12,7 +12,10 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Message,
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
-use Innmind\Json\Json;
+use Innmind\Json\{
+    Json,
+    Exception\Exception,
+};
 use Innmind\Immutable\{
     Str,
     MapInterface,
@@ -38,20 +41,34 @@ final class Monolog implements LineParser
     {
         $parts = $this->decode($line);
 
-        return new Log(
-            $this->clock->at((string) $parts->get('time')),
-            $line,
+        $attributes = [
             new Channel((string) $parts->get('channel')),
             new Level((string) $parts->get('level')),
             new Message((string) $parts->get('message')),
-            new Attribute\Attribute(
+        ];
+
+        try {
+            $attributes[] = new Attribute\Attribute(
                 'context',
                 Json::decode((string) $parts->get('context'))
-            ),
-            new Attribute\Attribute(
+            );
+        } catch (Exception $e) {
+            // do nothing
+        }
+
+        try {
+            $attributes[] = new Attribute\Attribute(
                 'extra',
                 Json::decode((string) $parts->get('extra')->trim())
-            )
+            );
+        } catch (Exception $e) {
+            // do nothing
+        }
+
+        return new Log(
+            $this->clock->at((string) $parts->get('time')),
+            $line,
+            ...$attributes
         );
     }
 

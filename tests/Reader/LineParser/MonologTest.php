@@ -60,6 +60,32 @@ class MonologTest extends TestCase
         $this->assertSame('2017-02-08T07:01:04+00:00', $log->time()->format(new ISO8601));
     }
 
+    public function testDoesntInjectContextAttributeWhenFailingToDecodeJsonString()
+    {
+        $parse = new Monolog(new Earth(new UTC));
+
+        $log = $parse(new Str('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'));
+
+        $this->assertTrue($log->attributes()->contains('channel'));
+        $this->assertTrue($log->attributes()->contains('level'));
+        $this->assertTrue($log->attributes()->contains('message'));
+        $this->assertTrue($log->attributes()->contains('extra'));
+        $this->assertFalse($log->attributes()->contains('context'));
+    }
+
+    public function testDoesntInjectExtraAttributeWhenFailingToDecodeJsonString()
+    {
+        $parse = new Monolog(new Earth(new UTC));
+
+        $log = $parse(new Str('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'));
+
+        $this->assertTrue($log->attributes()->contains('channel'));
+        $this->assertTrue($log->attributes()->contains('level'));
+        $this->assertTrue($log->attributes()->contains('message'));
+        $this->assertTrue($log->attributes()->contains('context'));
+        $this->assertFalse($log->attributes()->contains('extra'));
+    }
+
     public function lines(): array
     {
         return [
