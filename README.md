@@ -21,7 +21,7 @@ composer require innmind/log-reader
 ```php
 use Innmind\LogReader\{
     Reader/Synchronous,
-    Reader/LineParser/Symfony,
+    Reader/LineParser/Monolog,
     Log
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
@@ -29,7 +29,7 @@ use Innmind\Filesystem\Adapter\FilesystemAdapter;
 use Psr\Log\LogLevel;
 
 $read = new Synchronous(
-    new Symfony(new Earth)
+    new Monolog(new Earth)
 );
 $fs = new FilesystemAdapter('var/logs');
 $read($fs->get('prod.log')->content())

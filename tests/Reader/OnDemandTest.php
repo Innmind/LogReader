@@ -5,7 +5,7 @@ namespace Tests\Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader\OnDemand,
-    Reader\LineParser\Symfony,
+    Reader\LineParser\Monolog,
     Reader,
     Log,
     Log\Stream as OnDemandStream
@@ -20,13 +20,13 @@ class OnDemandTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new OnDemand(new Symfony(new Earth))
+            new OnDemand(new Monolog(new Earth))
         );
     }
 
     public function testParse()
     {
-        $read = new OnDemand(new Symfony(new Earth));
+        $read = new OnDemand(new Monolog(new Earth));
         $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);

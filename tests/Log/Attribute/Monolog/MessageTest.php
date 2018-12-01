@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Log\Attribute\Symfony;
+namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\Log\{
-    Attribute\Symfony\Message,
+    Attribute\Monolog\Message,
     Attribute
 };
 use PHPUnit\Framework\TestCase;

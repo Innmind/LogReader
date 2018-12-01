@@ -4,12 +4,12 @@ declare(strict_types = 1);
 namespace Tests\Innmind\LogReader\Reader\LineParser;
 
 use Innmind\LogReader\{
-    Reader\LineParser\Symfony,
+    Reader\LineParser\Monolog,
     Reader\LineParser,
     Log,
-    Log\Attribute\Symfony\Channel,
-    Log\Attribute\Symfony\Level,
-    Log\Attribute\Symfony\Message
+    Log\Attribute\Monolog\Channel,
+    Log\Attribute\Monolog\Level,
+    Log\Attribute\Monolog\Message
 };
 use Innmind\TimeContinuum\{
     TimeContinuum\Earth,
@@ -19,11 +19,11 @@ use Innmind\TimeContinuum\{
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\TestCase;
 
-class SymfonyTest extends TestCase
+class MonologTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, new Symfony(new Earth));
+        $this->assertInstanceOf(LineParser::class, new Monolog(new Earth));
     }
 
     /**
@@ -31,7 +31,7 @@ class SymfonyTest extends TestCase
      */
     public function testInvokation($line, $time, $channel, $level, $message)
     {
-        $parse = new Symfony(new Earth(new UTC));
+        $parse = new Monolog(new Earth(new UTC));
 
         $log = $parse(new Str($line));
 
@@ -49,7 +49,7 @@ class SymfonyTest extends TestCase
 
     public function testParseWithCustomRegexp()
     {
-        $parse = new Symfony(
+        $parse = new Monolog(
             new Earth(new UTC),
             '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).000000\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~'
         );

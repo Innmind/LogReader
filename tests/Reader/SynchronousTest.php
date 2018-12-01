@@ -5,7 +5,7 @@ namespace Tests\Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader\Synchronous,
-    Reader\LineParser\Symfony,
+    Reader\LineParser\Monolog,
     Reader,
     Log
 };
@@ -20,13 +20,13 @@ class SynchronousTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new Synchronous(new Symfony(new Earth))
+            new Synchronous(new Monolog(new Earth))
         );
     }
 
     public function testParse()
     {
-        $read = new Synchronous(new Symfony(new Earth));
+        $read = new Synchronous(new Monolog(new Earth));
         $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);

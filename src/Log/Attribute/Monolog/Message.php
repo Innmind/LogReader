@@ -1,14 +1,14 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Log\Attribute\Symfony;
+namespace Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\{
     Log\Attribute,
     Exception\DomainException
 };
 
-final class Channel implements Attribute
+final class Message implements Attribute
 {
     private $value;
 
@@ -23,7 +23,7 @@ final class Channel implements Attribute
 
     public function key(): string
     {
-        return 'channel';
+        return 'message';
     }
 
     public function value(): string
