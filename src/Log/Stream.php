@@ -191,17 +191,7 @@ final class Stream implements StreamInterface
      */
     public function indices(): StreamInterface
     {
-        $indices = new GenericStream('int');
-
-        if ($this->size() === 0) {
-            return $indices;
-        }
-
-        foreach (range(0, $this->size() - 1) as $index) {
-            $indices = $indices->add($index);
-        }
-
-        return $indices;
+        return GenericStream::of('int', ...\range(0, $this->size() - 1));
     }
 
     /**
