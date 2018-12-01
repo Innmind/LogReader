@@ -8,7 +8,10 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\TimeContinuumInterface;
+use Innmind\TimeContinuum\{
+    TimeContinuumInterface,
+    FormatInterface,
+};
 use Innmind\Url\{
     Url,
     Authority\Host,
@@ -35,13 +38,17 @@ final class ApacheAccess implements LineParser
     {
         $parts = $line->capture(self::FORMAT);
         $protocol = $parts->get('protocol')->split('.');
-        $time = \DateTimeImmutable::createFromFormat(
-            'd/M/Y:H:i:s O',
-            (string) $parts->get('time')
-        )->format(\DateTime::ATOM);
 
         return new Log(
-            $this->clock->at($time),
+            $this->clock->at(
+                (string) $parts->get('time'),
+                new class implements FormatInterface {
+                    public function __toString(): string
+                    {
+                        return 'd/M/Y:H:i:s O';
+                    }
+                }
+            ),
             $line,
             new Attribute('user', $parts->get('user')),
             new Attribute('client', new Host((string) $parts->get('client'))),
