@@ -6,7 +6,7 @@ namespace Innmind\LogReader\Reader\LineParser;
 use Innmind\LogReader\{
     Reader\LineParser,
     Log,
-    Log\Attribute,
+    Log\Attribute\Attribute,
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
 use Innmind\Url\{
@@ -43,34 +43,18 @@ final class ApacheAccess implements LineParser
         return new Log(
             $this->clock->at($time),
             $line,
-            new Attribute\Attribute('user', $parts->get('user')),
-            new Attribute\Attribute(
-                'client',
-                new Host((string) $parts->get('client'))
-            ),
-            new Attribute\Attribute(
-                'method',
-                new Method((string) $parts->get('method'))
-            ),
-            new Attribute\Attribute(
-                'path',
-                Url::fromString((string) $parts->get('path'))
-            ),
-            new Attribute\Attribute(
-                'protocol',
-                new ProtocolVersion(
-                    (int) (string) $protocol->first(),
-                    (int) (string) $protocol->last()
-                )
-            ),
-            new Attribute\Attribute(
-                'code',
-                new StatusCode((int) (string) $parts->get('code'))
-            ),
-            new Attribute\Attribute(
-                'size',
-                (int) (string) $parts->get('size')
-            )
+            new Attribute('user', $parts->get('user')),
+            new Attribute('client', new Host((string) $parts->get('client'))),
+            new Attribute('method', new Method((string) $parts->get('method'))),
+            new Attribute('path', Url::fromString((string) $parts->get('path'))),
+            new Attribute('protocol', new ProtocolVersion(
+                (int) (string) $protocol->first(),
+                (int) (string) $protocol->last()
+            )),
+            new Attribute('code', new StatusCode(
+                (int) (string) $parts->get('code')
+            )),
+            new Attribute('size', (int) (string) $parts->get('size'))
         );
     }
 }
