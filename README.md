@@ -20,8 +20,8 @@ composer require innmind/log-reader
 
 ```php
 use Innmind\LogReader\{
-    Reader/Synchronous,
-    Reader/LineParser/Monolog,
+    Reader\Synchronous,
+    Reader\LineParser\Monolog,
     Log
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
