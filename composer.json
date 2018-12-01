@@ -20,7 +20,8 @@
         "psr/log": "^1.0",
         "innmind/url": "^2.0",
         "innmind/http": "^3.0",
-        "innmind/stream": "^1.4"
+        "innmind/stream": "^1.4",
+        "innmind/json": "^1.1"
     },
     "autoload": {
         "psr-4": {

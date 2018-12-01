@@ -12,6 +12,7 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Message
 };
 use Innmind\TimeContinuum\TimeContinuumInterface;
+use Innmind\Json\Json;
 use Innmind\Immutable\{
     Str,
     Map,
@@ -49,14 +50,14 @@ final class Monolog implements LineParser
                     'context',
                     new Attribute\Attribute(
                         'context',
-                        json_decode((string) $parts->get('context'), true)
+                        Json::decode((string) $parts->get('context'))
                     )
                 )
                 (
                     'extra',
                     new Attribute\Attribute(
                         'extra',
-                        json_decode((string) $parts->get('extra')->trim(), true)
+                        Json::decode((string) $parts->get('extra')->trim())
                     )
                 )
         );
