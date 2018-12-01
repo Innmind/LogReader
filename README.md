@@ -42,3 +42,5 @@ $read($fs->get('prod.log')->content())
 ```
 
 The above example will print all messages that were logged at a critical level.
+
+**Note**: if parsing the `context` or `extra` attributes of a monolog line they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
