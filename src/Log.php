@@ -7,7 +7,9 @@ use Innmind\LogReader\Log\Attribute;
 use Innmind\TimeContinuum\PointInTimeInterface;
 use Innmind\Immutable\{
     Str,
-    MapInterface
+    MapInterface,
+    Map,
+    Sequence,
 };
 
 final class Log
@@ -19,21 +21,16 @@ final class Log
     public function __construct(
         PointInTimeInterface $time,
         Str $raw,
-        MapInterface $attributes
+        Attribute ...$attributes
     ) {
-        if (
-            (string) $attributes->keyType() !== 'string' ||
-            (string) $attributes->valueType() !== Attribute::class
-        ) {
-            throw new \TypeError(sprintf(
-                'Argument 3 must be of type MapInterface<string, %s>',
-                Attribute::class
-            ));
-        }
-
         $this->time = $time;
         $this->raw = $raw;
-        $this->attributes = $attributes;
+        $this->attributes = Sequence::of(...$attributes)->reduce(
+            Map::of('string', Attribute::class),
+            static function(MapInterface $attributes, Attribute $attribute): MapInterface {
+                return $attributes->put($attribute->key(), $attribute);
+            }
+        );
     }
 
     public function time(): PointInTimeInterface

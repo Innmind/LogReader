@@ -5,12 +5,11 @@ namespace Tests\Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader\Synchronous,
-    Reader\LineParser\Symfony,
+    Reader\LineParser\Monolog,
     Reader,
-    Log
+    Log,
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\File\File;
 use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\Stream as StaticStream;
 use PHPUnit\Framework\TestCase;
@@ -21,19 +20,16 @@ class SynchronousTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new Synchronous(new Symfony(new Earth))
+            new Synchronous(new Monolog(new Earth))
         );
     }
 
     public function testParse()
     {
-        $reader = new Synchronous(new Symfony(new Earth));
-        $file = new File(
-            'symfony.log',
-            new Stream(fopen('fixtures/symfony.log', 'r'))
-        );
+        $read = new Synchronous(new Monolog(new Earth));
+        $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
-        $stream = $reader->parse($file);
+        $stream = $read($file);
 
         $this->assertInstanceOf(StaticStream::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());

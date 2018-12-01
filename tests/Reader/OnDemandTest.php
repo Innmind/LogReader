@@ -5,13 +5,12 @@ namespace Tests\Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader\OnDemand,
-    Reader\LineParser\Symfony,
+    Reader\LineParser\Monolog,
     Reader,
     Log,
-    Log\Stream as OnDemandStream
+    Log\Stream as OnDemandStream,
 };
 use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\File\File;
 use Innmind\Stream\Readable\Stream;
 use PHPUnit\Framework\TestCase;
 
@@ -21,19 +20,16 @@ class OnDemandTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new OnDemand(new Symfony(new Earth))
+            new OnDemand(new Monolog(new Earth))
         );
     }
 
     public function testParse()
     {
-        $reader = new OnDemand(new Symfony(new Earth));
-        $file = new File(
-            'symfony.log',
-            new Stream(fopen('fixtures/symfony.log', 'r'))
-        );
+        $read = new OnDemand(new Monolog(new Earth));
+        $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
-        $stream = $reader->parse($file);
+        $stream = $read($file);
 
         $this->assertInstanceOf(OnDemandStream::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());

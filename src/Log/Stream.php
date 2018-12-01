@@ -4,14 +4,14 @@ declare(strict_types = 1);
 namespace Innmind\LogReader\Log;
 
 use Innmind\LogReader\Log;
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\{
     StreamInterface,
     Stream as GenericStream,
     MapInterface,
     Str,
     Exception\OutOfBoundException,
-    Exception\LogicException
+    Exception\LogicException,
 };
 
 final class Stream implements StreamInterface
@@ -20,9 +20,8 @@ final class Stream implements StreamInterface
     private $file;
     private $generator;
     private $type;
-    private $cursor = 0;
 
-    public function __construct(callable $walker, File $file)
+    public function __construct(callable $walker, Readable $file)
     {
         $this->walk = $walker;
         $this->file = $file;
@@ -61,7 +60,9 @@ final class Stream implements StreamInterface
      */
     public function diff(StreamInterface $stream): StreamInterface
     {
-        return $this->logs()->diff($stream);
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to have elements in another stream of logs
+        return $this;
     }
 
     /**
@@ -77,7 +78,18 @@ final class Stream implements StreamInterface
      */
     public function drop(int $size): StreamInterface
     {
-        return $this->logs()->drop($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            if ($this->key() >= $size) {
+                $logs = $logs->add($this->current());
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
@@ -93,7 +105,9 @@ final class Stream implements StreamInterface
      */
     public function equals(StreamInterface $stream): bool
     {
-        return $this->logs()->equals($stream);
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to equal another stream of logs (except itself)
+        return $stream === $this;
     }
 
     /**
@@ -153,7 +167,7 @@ final class Stream implements StreamInterface
      */
     public function last(): Log
     {
-        return $this->get($this->size() - 1);
+        return $this->logs()->last();
     }
 
     /**
@@ -177,17 +191,7 @@ final class Stream implements StreamInterface
      */
     public function indices(): StreamInterface
     {
-        $indices = new GenericStream('int');
-
-        if ($this->size() === 0) {
-            return $indices;
-        }
-
-        foreach (range(0, $this->size() - 1) as $index) {
-            $indices = $indices->add($index);
-        }
-
-        return $indices;
+        return GenericStream::of('int', ...\range(0, $this->size() - 1));
     }
 
     /**
@@ -235,7 +239,20 @@ final class Stream implements StreamInterface
      */
     public function take(int $size): StreamInterface
     {
-        return $this->logs()->take($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            $logs = $logs->add($this->current());
+
+            if ($logs->size() === $size) {
+                return $logs;
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
@@ -243,7 +260,20 @@ final class Stream implements StreamInterface
      */
     public function takeEnd(int $size): StreamInterface
     {
-        return $this->logs()->takeEnd($size);
+        $logs = new GenericStream(Log::class);
+        $this->rewind();
+
+        while ($this->valid()) {
+            $logs = $logs->add($this->current());
+
+            if ($logs->size() > $size) {
+                $logs = $logs->drop(1);
+            }
+
+            $this->next();
+        }
+
+        return $logs;
     }
 
     /**
@@ -259,7 +289,13 @@ final class Stream implements StreamInterface
      */
     public function intersect(StreamInterface $stream): StreamInterface
     {
-        return $this->logs()->intersect($stream);
+        if ($stream === $this) {
+            return $this;
+        }
+
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to have common elements with an outside stream
+        return $this->clear();
     }
 
     /**

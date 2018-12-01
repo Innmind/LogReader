@@ -6,22 +6,22 @@ namespace Innmind\LogReader\Reader\LineParser;
 use Innmind\LogReader\{
     Reader\LineParser,
     Log,
-    Log\Attribute
+    Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\TimeContinuumInterface;
+use Innmind\TimeContinuum\{
+    TimeContinuumInterface,
+    FormatInterface,
+};
 use Innmind\Url\{
     Url,
-    Authority\Host
+    Authority\Host,
 };
 use Innmind\Http\{
     ProtocolVersion\ProtocolVersion,
     Message\Method\Method,
-    Message\StatusCode\StatusCode
+    Message\StatusCode\StatusCode,
 };
-use Innmind\Immutable\{
-    Str,
-    Map
-};
+use Innmind\Immutable\Str;
 
 final class ApacheAccess implements LineParser
 {
@@ -38,64 +38,30 @@ final class ApacheAccess implements LineParser
     {
         $parts = $line->capture(self::FORMAT);
         $protocol = $parts->get('protocol')->split('.');
-        $time = \DateTimeImmutable::createFromFormat(
-            'd/M/Y:H:i:s O',
-            (string) $parts->get('time')
-        )->format(\DateTime::ATOM);
 
         return new Log(
-            $this->clock->at($time),
+            $this->clock->at(
+                (string) $parts->get('time'),
+                new class implements FormatInterface {
+                    public function __toString(): string
+                    {
+                        return 'd/M/Y:H:i:s O';
+                    }
+                }
+            ),
             $line,
-            (new Map('string', Attribute::class))
-                ->put(
-                    'user',
-                    new Attribute\Attribute('user', $parts->get('user'))
-                )
-                ->put(
-                    'client',
-                    new Attribute\Attribute(
-                        'client',
-                        new Host((string) $parts->get('client'))
-                    )
-                )
-                ->put(
-                    'method',
-                    new Attribute\Attribute(
-                        'method',
-                        new Method((string) $parts->get('method'))
-                    )
-                )
-                ->put(
-                    'path',
-                    new Attribute\Attribute(
-                        'path',
-                        Url::fromString((string) $parts->get('path'))
-                    )
-                )
-                ->put(
-                    'protocol',
-                    new Attribute\Attribute(
-                        'protocol',
-                        new ProtocolVersion(
-                            (int) (string) $protocol->first(),
-                            (int) (string) $protocol->last()
-                        )
-                    )
-                )
-                ->put(
-                    'code',
-                    new Attribute\Attribute(
-                        'code',
-                        new StatusCode((int) (string) $parts->get('code'))
-                    )
-                )
-                ->put(
-                    'size',
-                    new Attribute\Attribute(
-                        'size',
-                        (int) (string) $parts->get('size')
-                    )
-                )
+            new Attribute('user', $parts->get('user')),
+            new Attribute('client', new Host((string) $parts->get('client'))),
+            new Attribute('method', new Method((string) $parts->get('method'))),
+            new Attribute('path', Url::fromString((string) $parts->get('path'))),
+            new Attribute('protocol', new ProtocolVersion(
+                (int) (string) $protocol->first(),
+                (int) (string) $protocol->last()
+            )),
+            new Attribute('code', new StatusCode(
+                (int) (string) $parts->get('code')
+            )),
+            new Attribute('size', (int) (string) $parts->get('size'))
         );
     }
 }

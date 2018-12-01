@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Log\Attribute\Symfony;
+namespace Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\{
     Log\Attribute,
-    Exception\DomainException
+    Exception\DomainException,
 };
 
 final class Channel implements Attribute

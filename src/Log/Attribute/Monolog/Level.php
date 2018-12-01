@@ -1,29 +1,30 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Log\Attribute\Symfony;
+namespace Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\{
     Log\Attribute,
-    Exception\DomainException
+    Exception\DomainException,
 };
+use Psr\Log\LogLevel;
 
-final class Message implements Attribute
+final class Level implements Attribute
 {
     private $value;
 
     public function __construct(string $value)
     {
-        if (empty($value)) {
+        if (!defined($level = LogLevel::class.'::'.$value)) {
             throw new DomainException;
         }
 
-        $this->value = $value;
+        $this->value = constant($level);
     }
 
     public function key(): string
     {
-        return 'message';
+        return 'level';
     }
 
     public function value(): string

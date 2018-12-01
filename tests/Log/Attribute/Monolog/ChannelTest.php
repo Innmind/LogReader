@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Log\Attribute\Symfony;
+namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\Log\{
-    Attribute\Symfony\Channel,
-    Attribute
+    Attribute\Monolog\Channel,
+    Attribute,
 };
 use PHPUnit\Framework\TestCase;
 

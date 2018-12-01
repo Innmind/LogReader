@@ -6,21 +6,21 @@ namespace Tests\Innmind\LogReader\Reader\LineParser;
 use Innmind\LogReader\{
     Reader\LineParser\ApacheAccess,
     Reader\LineParser,
-    Log
+    Log,
 };
 use Innmind\TimeContinuum\{
     TimeContinuum\Earth,
     Timezone\Earth\UTC,
-    Format\ISO8601
+    Format\ISO8601,
 };
 use Innmind\Http\{
     Message\Method,
     Message\StatusCode,
-    ProtocolVersion
+    ProtocolVersion,
 };
 use Innmind\Url\{
     UrlInterface,
-    Authority\HostInterface
+    Authority\HostInterface,
 };
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\TestCase;

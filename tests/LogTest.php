@@ -5,12 +5,12 @@ namespace Tests\Innmind\LogReader;
 
 use Innmind\LogReader\{
     Log,
-    Log\Attribute
+    Log\Attribute,
 };
 use Innmind\TimeContinuum\PointInTimeInterface;
 use Innmind\Immutable\{
-    Map,
-    Str
+    MapInterface,
+    Str,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -21,52 +21,27 @@ class LogTest extends TestCase
         $log = new Log(
             $time = $this->createMock(PointInTimeInterface::class),
             $raw = new Str('foo'),
-            $attributes = new Map('string', Attribute::class)
+            $attribute = new Attribute\Attribute('bar', 42)
         );
 
         $this->assertSame($time, $log->time());
         $this->assertSame($raw, $log->raw());
-        $this->assertSame($attributes, $log->attributes());
+        $this->assertInstanceOf(MapInterface::class, $log->attributes());
+        $this->assertSame('string', (string) $log->attributes()->keyType());
+        $this->assertSame(Attribute::class, (string) $log->attributes()->valueType());
+        $this->assertSame($attribute, $log->attributes()->get('bar'));
         $this->assertSame('foo', (string) $log);
-    }
-
-    /**
-     * @expectedException TypeError
-     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
-     */
-    public function testThrowWhenInvalidAttributesKeys()
-    {
-        new Log(
-            $this->createMock(PointInTimeInterface::class),
-            new Str(''),
-            new Map('int', Attribute::class)
-        );
-    }
-
-    /**
-     * @expectedException TypeError
-     * @expectedExceptionMessage Argument 3 must be of type MapInterface<string, Innmind\LogReader\Log\Attribute>
-     */
-    public function testThrowWhenInvalidAttributesValues()
-    {
-        new Log(
-            $this->createMock(PointInTimeInterface::class),
-            new Str(''),
-            new Map('string', 'string')
-        );
     }
 
     public function testEquals()
     {
         $log = new Log(
             $this->createMock(PointInTimeInterface::class),
-            new Str('foo'),
-            new Map('string', Attribute::class)
+            new Str('foo')
         );
         $log2 = new Log(
             $this->createMock(PointInTimeInterface::class),
-            new Str('bar'),
-            new Map('string', Attribute::class)
+            new Str('bar')
         );
 
         $this->assertTrue($log->equals($log));

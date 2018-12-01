@@ -6,10 +6,10 @@ namespace Tests\Innmind\LogReader\Log;
 use Innmind\LogReader\{
     Log\Stream,
     Log,
-    Log\Attribute
+    Log\Attribute,
 };
 use Innmind\TimeContinuum\PointInTime\Earth\Now;
-use Innmind\Filesystem\File;
+use Innmind\Stream\Readable;
 use Innmind\Immutable\{
     StreamInterface,
     Str,
@@ -31,12 +31,11 @@ class StreamTest extends TestCase
             while ($i < 10) {
                 yield new Log(
                     new Now,
-                    new Str((string) $i),
-                    new Map('string', Attribute::class)
+                    new Str((string) $i)
                 );
                 ++$i;
             }
-        }, $this->createMock(File::class));
+        }, $this->createMock(Readable::class));
     }
 
     public function testInterface()
@@ -117,8 +116,7 @@ class StreamTest extends TestCase
 
     public function testEquals()
     {
-        //always false as we rewalk the full file each time
-        $this->assertFalse($this->stream->equals($this->stream));
+        $this->assertTrue($this->stream->equals($this->stream));
         $this->assertFalse($this->stream->equals($this->stream->clear()));
     }
 
@@ -185,8 +183,7 @@ class StreamTest extends TestCase
         $this->assertFalse($this->stream->contains($this->stream->get(2)));
         $this->assertFalse($this->stream->contains(new Log(
             new Now,
-            new Str(''),
-            new Map('string', Attribute::class)
+            new Str('')
         )));
     }
 
