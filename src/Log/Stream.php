@@ -20,7 +20,6 @@ final class Stream implements StreamInterface
     private $file;
     private $generator;
     private $type;
-    private $cursor = 0;
 
     public function __construct(callable $walker, Readable $file)
     {
