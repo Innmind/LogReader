@@ -60,7 +60,9 @@ final class Stream implements StreamInterface
      */
     public function diff(StreamInterface $stream): StreamInterface
     {
-        return $this->logs()->diff($stream);
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to have elements in another stream of logs
+        return $this;
     }
 
     /**
@@ -103,7 +105,9 @@ final class Stream implements StreamInterface
      */
     public function equals(StreamInterface $stream): bool
     {
-        return $this->logs()->equals($stream);
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to equal another stream of logs (except itself)
+        return $stream === $this;
     }
 
     /**
@@ -299,7 +303,9 @@ final class Stream implements StreamInterface
             return $this;
         }
 
-        return $this->logs()->intersect($stream);
+        // we can do this as this stream is rebuilt upon each full iteration
+        // making it impossible to have common elements with an outside stream
+        return $this->clear();
     }
 
     /**

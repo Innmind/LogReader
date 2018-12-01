@@ -117,8 +117,7 @@ class StreamTest extends TestCase
 
     public function testEquals()
     {
-        //always false as we rewalk the full file each time
-        $this->assertFalse($this->stream->equals($this->stream));
+        $this->assertTrue($this->stream->equals($this->stream));
         $this->assertFalse($this->stream->equals($this->stream->clear()));
     }
 
