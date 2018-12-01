@@ -7,6 +7,7 @@ use Innmind\LogReader\{
     Log\Attribute,
     Exception\DomainException,
 };
+use Innmind\Immutable\Str;
 
 final class Message implements Attribute
 {
@@ -14,7 +15,7 @@ final class Message implements Attribute
 
     public function __construct(string $value)
     {
-        if (empty($value)) {
+        if (Str::of($value)->empty()) {
             throw new DomainException;
         }
 
