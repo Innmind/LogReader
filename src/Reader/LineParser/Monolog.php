@@ -15,7 +15,6 @@ use Innmind\TimeContinuum\TimeContinuumInterface;
 use Innmind\Json\Json;
 use Innmind\Immutable\{
     Str,
-    Map,
     MapInterface,
 };
 
@@ -42,24 +41,17 @@ final class Monolog implements LineParser
         return new Log(
             $this->clock->at((string) $parts->get('time')),
             $line,
-            Map::of('string', Attribute::class)
-                ('channel', new Channel((string) $parts->get('channel')))
-                ('level', new Level((string) $parts->get('level')))
-                ('message', new Message((string) $parts->get('message')))
-                (
-                    'context',
-                    new Attribute\Attribute(
-                        'context',
-                        Json::decode((string) $parts->get('context'))
-                    )
-                )
-                (
-                    'extra',
-                    new Attribute\Attribute(
-                        'extra',
-                        Json::decode((string) $parts->get('extra')->trim())
-                    )
-                )
+            new Channel((string) $parts->get('channel')),
+            new Level((string) $parts->get('level')),
+            new Message((string) $parts->get('message')),
+            new Attribute\Attribute(
+                'context',
+                Json::decode((string) $parts->get('context'))
+            ),
+            new Attribute\Attribute(
+                'extra',
+                Json::decode((string) $parts->get('extra')->trim())
+            )
         );
     }
 

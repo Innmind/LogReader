@@ -31,8 +31,7 @@ class StreamTest extends TestCase
             while ($i < 10) {
                 yield new Log(
                     new Now,
-                    new Str((string) $i),
-                    new Map('string', Attribute::class)
+                    new Str((string) $i)
                 );
                 ++$i;
             }
@@ -184,8 +183,7 @@ class StreamTest extends TestCase
         $this->assertFalse($this->stream->contains($this->stream->get(2)));
         $this->assertFalse($this->stream->contains(new Log(
             new Now,
-            new Str(''),
-            new Map('string', Attribute::class)
+            new Str('')
         )));
     }
 

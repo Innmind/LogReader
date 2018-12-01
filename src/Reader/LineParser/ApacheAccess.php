@@ -18,10 +18,7 @@ use Innmind\Http\{
     Message\Method\Method,
     Message\StatusCode\StatusCode,
 };
-use Innmind\Immutable\{
-    Str,
-    Map,
-};
+use Innmind\Immutable\Str;
 
 final class ApacheAccess implements LineParser
 {
@@ -46,56 +43,34 @@ final class ApacheAccess implements LineParser
         return new Log(
             $this->clock->at($time),
             $line,
-            (new Map('string', Attribute::class))
-                ->put(
-                    'user',
-                    new Attribute\Attribute('user', $parts->get('user'))
+            new Attribute\Attribute('user', $parts->get('user')),
+            new Attribute\Attribute(
+                'client',
+                new Host((string) $parts->get('client'))
+            ),
+            new Attribute\Attribute(
+                'method',
+                new Method((string) $parts->get('method'))
+            ),
+            new Attribute\Attribute(
+                'path',
+                Url::fromString((string) $parts->get('path'))
+            ),
+            new Attribute\Attribute(
+                'protocol',
+                new ProtocolVersion(
+                    (int) (string) $protocol->first(),
+                    (int) (string) $protocol->last()
                 )
-                ->put(
-                    'client',
-                    new Attribute\Attribute(
-                        'client',
-                        new Host((string) $parts->get('client'))
-                    )
-                )
-                ->put(
-                    'method',
-                    new Attribute\Attribute(
-                        'method',
-                        new Method((string) $parts->get('method'))
-                    )
-                )
-                ->put(
-                    'path',
-                    new Attribute\Attribute(
-                        'path',
-                        Url::fromString((string) $parts->get('path'))
-                    )
-                )
-                ->put(
-                    'protocol',
-                    new Attribute\Attribute(
-                        'protocol',
-                        new ProtocolVersion(
-                            (int) (string) $protocol->first(),
-                            (int) (string) $protocol->last()
-                        )
-                    )
-                )
-                ->put(
-                    'code',
-                    new Attribute\Attribute(
-                        'code',
-                        new StatusCode((int) (string) $parts->get('code'))
-                    )
-                )
-                ->put(
-                    'size',
-                    new Attribute\Attribute(
-                        'size',
-                        (int) (string) $parts->get('size')
-                    )
-                )
+            ),
+            new Attribute\Attribute(
+                'code',
+                new StatusCode((int) (string) $parts->get('code'))
+            ),
+            new Attribute\Attribute(
+                'size',
+                (int) (string) $parts->get('size')
+            )
         );
     }
 }
