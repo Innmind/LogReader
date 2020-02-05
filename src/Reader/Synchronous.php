@@ -28,6 +28,7 @@ final class Synchronous implements Reader
     public function __invoke(Readable $file): Sequence
     {
         $file->rewind();
+        /** @var Sequence<Log> */
         $lines = Sequence::of(Log::class);
 
         while (!$file->end()) {

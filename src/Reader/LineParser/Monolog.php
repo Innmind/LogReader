@@ -70,6 +70,9 @@ final class Monolog implements LineParser
         );
     }
 
+    /**
+     * @return Map<scalar, Str>
+     */
     private function decode(Str $line): Map
     {
         $parts = $line->capture($this->format);

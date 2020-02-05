@@ -19,6 +19,7 @@ final class Level implements Attribute
             throw new DomainException;
         }
 
+        /** @var string */
         $this->value = \constant($level);
     }
 

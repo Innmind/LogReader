@@ -15,6 +15,7 @@ final class Log
 {
     private PointInTime $time;
     private Str $raw;
+    /** @var Map<string, Attribute> */
     private Map $attributes;
 
     public function __construct(
@@ -24,6 +25,7 @@ final class Log
     ) {
         $this->time = $time;
         $this->raw = $raw;
+        /** @var Map<string, Attribute> */
         $this->attributes = Sequence::of(Attribute::class, ...$attributes)->toMapOf(
             'string',
             Attribute::class,

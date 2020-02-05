@@ -28,6 +28,7 @@ final class OnDemand implements Reader
      */
     public function __invoke(Readable $file): Sequence
     {
+        /** @var Sequence<Log> */
         return Sequence::lazy(
             Log::class,
             function() use ($file): \Generator {
