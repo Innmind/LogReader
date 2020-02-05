@@ -5,10 +5,10 @@ namespace Innmind\LogReader\Reader;
 
 use Innmind\LogReader\{
     Reader,
-    Log\Stream,
+    Log,
 };
 use Innmind\Stream\Readable;
-use Innmind\Immutable\StreamInterface;
+use Innmind\Immutable\Sequence;
 
 /**
  * Use a generator that will parse the file only when you'll manipulate the
@@ -16,7 +16,7 @@ use Innmind\Immutable\StreamInterface;
  */
 final class OnDemand implements Reader
 {
-    private $parse;
+    private LineParser $parse;
 
     public function __construct(LineParser $parser)
     {
@@ -26,20 +26,24 @@ final class OnDemand implements Reader
     /**
      * {@inheritdoc}
      */
-    public function __invoke(Readable $file): StreamInterface
+    public function __invoke(Readable $file): Sequence
     {
-        return new Stream(function(Readable $file) {
-            $file->rewind();
+        /** @var Sequence<Log> */
+        return Sequence::lazy(
+            Log::class,
+            function() use ($file): \Generator {
+                $file->rewind();
 
-            while (!$file->end()) {
-                $line = $file->readLine();
+                while (!$file->end()) {
+                    $line = $file->readLine();
 
-                if ($line->length() === 0) {
-                    continue;
+                    if ($line->empty()) {
+                        continue;
+                    }
+
+                    yield ($this->parse)($line);
                 }
-
-                yield ($this->parse)($line);
-            }
-        }, $file);
+            },
+        );
     }
 }

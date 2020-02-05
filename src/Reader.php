@@ -4,12 +4,12 @@ declare(strict_types = 1);
 namespace Innmind\LogReader;
 
 use Innmind\Stream\Readable;
-use Innmind\Immutable\StreamInterface;
+use Innmind\Immutable\Sequence;
 
 interface Reader
 {
     /**
-     * @return StreamInterface<Log>
+     * @return Sequence<Log>
      */
-    public function __invoke(Readable $file): StreamInterface;
+    public function __invoke(Readable $file): Sequence;
 }

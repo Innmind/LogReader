@@ -11,15 +11,16 @@ use Psr\Log\LogLevel;
 
 final class Level implements Attribute
 {
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {
-        if (!defined($level = LogLevel::class.'::'.$value)) {
+        if (!\defined($level = LogLevel::class.'::'.$value)) {
             throw new DomainException;
         }
 
-        $this->value = constant($level);
+        /** @var string */
+        $this->value = \constant($level);
     }
 
     public function key(): string

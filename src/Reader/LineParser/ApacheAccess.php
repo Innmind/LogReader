@@ -9,17 +9,17 @@ use Innmind\LogReader\{
     Log\Attribute\Attribute,
 };
 use Innmind\TimeContinuum\{
-    TimeContinuumInterface,
-    FormatInterface,
+    Clock,
+    Format,
 };
 use Innmind\Url\{
     Url,
     Authority\Host,
 };
 use Innmind\Http\{
-    ProtocolVersion\ProtocolVersion,
-    Message\Method\Method,
-    Message\StatusCode\StatusCode,
+    ProtocolVersion,
+    Message\Method,
+    Message\StatusCode,
 };
 use Innmind\Immutable\Str;
 
@@ -27,9 +27,9 @@ final class ApacheAccess implements LineParser
 {
     private const FORMAT = '~^(?P<client>\S+) - (?P<user>\S+) \[(?P<time>\d{2}/[a-zA-Z]{3}/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4})] "(?P<method>[A-Z]{3,}) (?P<path>.+) HTTP/(?P<protocol>\d\.\d)" (?P<code>\d+) (?P<size>\d+)$~';
 
-    private $clock;
+    private Clock $clock;
 
-    public function __construct(TimeContinuumInterface $clock)
+    public function __construct(Clock $clock)
     {
         $this->clock = $clock;
     }
@@ -41,27 +41,27 @@ final class ApacheAccess implements LineParser
 
         return new Log(
             $this->clock->at(
-                (string) $parts->get('time'),
-                new class implements FormatInterface {
-                    public function __toString(): string
+                $parts->get('time')->toString(),
+                new class implements Format {
+                    public function toString(): string
                     {
                         return 'd/M/Y:H:i:s O';
                     }
-                }
+                },
             ),
             $line,
             new Attribute('user', $parts->get('user')),
-            new Attribute('client', new Host((string) $parts->get('client'))),
-            new Attribute('method', new Method((string) $parts->get('method'))),
-            new Attribute('path', Url::fromString((string) $parts->get('path'))),
+            new Attribute('client', Host::of($parts->get('client')->toString())),
+            new Attribute('method', new Method($parts->get('method')->toString())),
+            new Attribute('path', Url::of($parts->get('path')->toString())),
             new Attribute('protocol', new ProtocolVersion(
-                (int) (string) $protocol->first(),
-                (int) (string) $protocol->last()
+                (int) $protocol->first()->toString(),
+                (int) $protocol->last()->toString(),
             )),
             new Attribute('code', new StatusCode(
-                (int) (string) $parts->get('code')
+                (int) $parts->get('code')->toString(),
             )),
-            new Attribute('size', (int) (string) $parts->get('size'))
+            new Attribute('size', (int) $parts->get('size')->toString()),
         );
     }
 }

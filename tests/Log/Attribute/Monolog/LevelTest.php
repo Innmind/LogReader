@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
-use Innmind\LogReader\Log\{
-    Attribute\Monolog\Level,
-    Attribute,
+use Innmind\LogReader\{
+    Log\Attribute\Monolog\Level,
+    Log\Attribute,
+    Exception\DomainException
 };
 use PHPUnit\Framework\TestCase;
 
@@ -20,11 +21,10 @@ class LevelTest extends TestCase
         $this->assertSame('critical', $level->value());
     }
 
-    /**
-     * @expectedException Innmind\LogReader\Exception\DomainException
-     */
     public function testThrowWhenUnknownLevel()
     {
+        $this->expectException(DomainException::class);
+
         new Level('whatever');
     }
 }

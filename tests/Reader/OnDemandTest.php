@@ -8,10 +8,10 @@ use Innmind\LogReader\{
     Reader\LineParser\Monolog,
     Reader,
     Log,
-    Log\Stream as OnDemandStream,
 };
-use Innmind\TimeContinuum\TimeContinuum\Earth;
+use Innmind\TimeContinuum\Earth\Clock;
 use Innmind\Stream\Readable\Stream;
+use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class OnDemandTest extends TestCase
@@ -20,18 +20,18 @@ class OnDemandTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new OnDemand(new Monolog(new Earth))
+            new OnDemand(new Monolog(new Clock))
         );
     }
 
     public function testParse()
     {
-        $read = new OnDemand(new Monolog(new Earth));
+        $read = new OnDemand(new Monolog(new Clock));
         $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);
 
-        $this->assertInstanceOf(OnDemandStream::class, $stream);
+        $this->assertInstanceOf(Sequence::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());
         $this->assertCount(5000, $stream);
         $this->assertSame(

@@ -1,10 +1,8 @@
 # Log reader
 
-| `master` | `develop` |
-|----------|-----------|
-| [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=develop) |
-| [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=master) | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=develop) |
-| [![Build Status](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/build-status/master) | [![Build Status](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/build-status/develop) |
+[![Build Status](https://github.com/Innmind/LogReader/workflows/CI/badge.svg)](https://github.com/Innmind/LogReader/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/Innmind/LogReader/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/LogReader)
+[![Type Coverage](https://shepherd.dev/github/Innmind/LogReader/coverage.svg)](https://shepherd.dev/github/Innmind/LogReader)
 
 Allow you to parse symfony and apache access logs.
 
@@ -22,16 +20,18 @@ composer require innmind/log-reader
 use Innmind\LogReader\{
     Reader\Synchronous,
     Reader\LineParser\Monolog,
-    Log
+    Log,
 };
-use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\Adapter\FilesystemAdapter;
+use Innmind\OperatingSystem\Factory;
+use Innmind\Url\Path;
 use Psr\Log\LogLevel;
 
+$os = Factory::build();
+
 $read = new Synchronous(
-    new Monolog(new Earth)
+    new Monolog($os->clock()),
 );
-$fs = new FilesystemAdapter('var/logs');
+$fs = $os->filesystem()->mount(Path::of('var/logs'));
 $read($fs->get('prod.log')->content())
     ->filter(static function(Log $log): bool {
         return $log->attributes()->get('level')->value() === LogLevel::CRITICAL;
@@ -43,4 +43,4 @@ $read($fs->get('prod.log')->content())
 
 The above example will print all messages that were logged at a critical level.
 
-**Note**: if parsing the `context` or `extra` attributes of a monolog line they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
+**Note**: if parsing the `context` or `extra` attributes of a monolog line fail they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.

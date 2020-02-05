@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
-use Innmind\LogReader\Log\{
-    Attribute\Monolog\Message,
-    Attribute,
+use Innmind\LogReader\{
+    Log\Attribute\Monolog\Message,
+    Log\Attribute,
+    Exception\DomainException
 };
 use PHPUnit\Framework\TestCase;
 
@@ -20,11 +21,10 @@ class MessageTest extends TestCase
         $this->assertSame('Fatal error', $message->value());
     }
 
-    /**
-     * @expectedException Innmind\LogReader\Exception\DomainException
-     */
     public function testThrowWhenEmptyMessage()
     {
+        $this->expectException(DomainException::class);
+
         new Message('');
     }
 }

@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\LogReader\Log\Attribute;
 
-use Innmind\LogReader\Log\{
-    Attribute\Attribute,
-    Attribute as AttributeInterface,
+use Innmind\LogReader\{
+    Log\Attribute\Attribute,
+    Log\Attribute as AttributeInterface,
+    Exception\EmptyAttributeKeyNotAllowed
 };
 use PHPUnit\Framework\TestCase;
 
@@ -20,11 +21,10 @@ class AttributeTest extends TestCase
         $this->assertSame(42, $attribute->value());
     }
 
-    /**
-     * @expectedException Innmind\LogReader\Exception\EmptyAttributeKeyNotAllowed
-     */
     public function testThrowWhenEmptyKey()
     {
+        $this->expectException(EmptyAttributeKeyNotAllowed::class);
+
         new Attribute('', 42);
     }
 }

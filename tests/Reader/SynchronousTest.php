@@ -9,9 +9,9 @@ use Innmind\LogReader\{
     Reader,
     Log,
 };
-use Innmind\TimeContinuum\TimeContinuum\Earth;
+use Innmind\TimeContinuum\Earth\Clock;
 use Innmind\Stream\Readable\Stream;
-use Innmind\Immutable\Stream as StaticStream;
+use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
 class SynchronousTest extends TestCase
@@ -20,18 +20,18 @@ class SynchronousTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new Synchronous(new Monolog(new Earth))
+            new Synchronous(new Monolog(new Clock))
         );
     }
 
     public function testParse()
     {
-        $read = new Synchronous(new Monolog(new Earth));
+        $read = new Synchronous(new Monolog(new Clock));
         $file = new Stream(fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);
 
-        $this->assertInstanceOf(StaticStream::class, $stream);
+        $this->assertInstanceOf(Sequence::class, $stream);
         $this->assertSame(Log::class, (string) $stream->type());
         $this->assertCount(5000, $stream);
     }

@@ -7,15 +7,20 @@ use Innmind\LogReader\{
     Log\Attribute as AttributeInterface,
     Exception\EmptyAttributeKeyNotAllowed,
 };
+use Innmind\Immutable\Str;
 
 final class Attribute implements AttributeInterface
 {
-    private $key;
+    private string $key;
+    /** @var mixed */
     private $value;
 
+    /**
+     * @param mixed $value
+     */
     public function __construct(string $key, $value)
     {
-        if (empty($key)) {
+        if (Str::of($key)->empty()) {
             throw new EmptyAttributeKeyNotAllowed;
         }
 
