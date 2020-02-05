@@ -18,7 +18,7 @@ use Innmind\Immutable\{
  */
 final class Synchronous implements Reader
 {
-    private $parse;
+    private LineParser $parse;
 
     public function __construct(LineParser $parser)
     {

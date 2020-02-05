@@ -10,7 +10,7 @@ use Innmind\LogReader\{
 
 final class Attribute implements AttributeInterface
 {
-    private $key;
+    private string $key;
     private $value;
 
     public function __construct(string $key, $value)

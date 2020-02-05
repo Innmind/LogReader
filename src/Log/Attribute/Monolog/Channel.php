@@ -10,7 +10,7 @@ use Innmind\LogReader\{
 
 final class Channel implements Attribute
 {
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

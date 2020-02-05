@@ -14,9 +14,9 @@ use Innmind\Immutable\{
 
 final class Log
 {
-    private $time;
-    private $raw;
-    private $attributes;
+    private PointInTimeInterface $time;
+    private Str $raw;
+    private Map $attributes;
 
     public function __construct(
         PointInTimeInterface $time,

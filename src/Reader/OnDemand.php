@@ -16,7 +16,7 @@ use Innmind\Immutable\StreamInterface;
  */
 final class OnDemand implements Reader
 {
-    private $parse;
+    private LineParser $parse;
 
     public function __construct(LineParser $parser)
     {

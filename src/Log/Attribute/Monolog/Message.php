@@ -11,7 +11,7 @@ use Innmind\Immutable\Str;
 
 final class Message implements Attribute
 {
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

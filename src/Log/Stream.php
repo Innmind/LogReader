@@ -17,9 +17,9 @@ use Innmind\Immutable\{
 final class Stream implements StreamInterface
 {
     private $walk;
-    private $file;
-    private $generator;
-    private $type;
+    private Readable $file;
+    private ?\Generator $generator = null;
+    private Str $type;
 
     public function __construct(callable $walker, Readable $file)
     {
