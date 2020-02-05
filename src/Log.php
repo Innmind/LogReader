@@ -56,7 +56,7 @@ final class Log
         return $this->raw->equals($log->raw());
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->raw->toString();
     }

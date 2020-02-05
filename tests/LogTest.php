@@ -30,7 +30,7 @@ class LogTest extends TestCase
         $this->assertSame('string', $log->attributes()->keyType());
         $this->assertSame(Attribute::class, $log->attributes()->valueType());
         $this->assertSame($attribute, $log->attributes()->get('bar'));
-        $this->assertSame('foo', (string) $log);
+        $this->assertSame('foo', $log->toString());
     }
 
     public function testEquals()
