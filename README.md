@@ -20,16 +20,18 @@ composer require innmind/log-reader
 use Innmind\LogReader\{
     Reader\Synchronous,
     Reader\LineParser\Monolog,
-    Log
+    Log,
 };
-use Innmind\TimeContinuum\TimeContinuum\Earth;
-use Innmind\Filesystem\Adapter\FilesystemAdapter;
+use Innmind\OperatingSystem\Factory;
+use Innmind\Url\Path;
 use Psr\Log\LogLevel;
 
+$os = Factory::build();
+
 $read = new Synchronous(
-    new Monolog(new Earth)
+    new Monolog($os->clock()),
 );
-$fs = new FilesystemAdapter('var/logs');
+$fs = $os->filesystem()->mount(Path::of('var/logs'));
 $read($fs->get('prod.log')->content())
     ->filter(static function(Log $log): bool {
         return $log->attributes()->get('level')->value() === LogLevel::CRITICAL;
@@ -41,4 +43,4 @@ $read($fs->get('prod.log')->content())
 
 The above example will print all messages that were logged at a critical level.
 
-**Note**: if parsing the `context` or `extra` attributes of a monolog line they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
+**Note**: if parsing the `context` or `extra` attributes of a monolog line fail they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
