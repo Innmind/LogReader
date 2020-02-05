@@ -4,36 +4,36 @@ declare(strict_types = 1);
 namespace Innmind\LogReader;
 
 use Innmind\LogReader\Log\Attribute;
-use Innmind\TimeContinuum\PointInTimeInterface;
+use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
     Str,
-    MapInterface,
     Map,
     Sequence,
 };
 
 final class Log
 {
-    private PointInTimeInterface $time;
+    private PointInTime $time;
     private Str $raw;
     private Map $attributes;
 
     public function __construct(
-        PointInTimeInterface $time,
+        PointInTime $time,
         Str $raw,
         Attribute ...$attributes
     ) {
         $this->time = $time;
         $this->raw = $raw;
-        $this->attributes = Sequence::of(...$attributes)->reduce(
-            Map::of('string', Attribute::class),
-            static function(MapInterface $attributes, Attribute $attribute): MapInterface {
-                return $attributes->put($attribute->key(), $attribute);
-            }
+        $this->attributes = Sequence::of(Attribute::class, ...$attributes)->toMapOf(
+            'string',
+            Attribute::class,
+            static function(Attribute $attribute): \Generator {
+                yield $attribute->key() => $attribute;
+            },
         );
     }
 
-    public function time(): PointInTimeInterface
+    public function time(): PointInTime
     {
         return $this->time;
     }
@@ -44,9 +44,9 @@ final class Log
     }
 
     /**
-     * @return MapInterface<string, Attribute>
+     * @return Map<string, Attribute>
      */
-    public function attributes(): MapInterface
+    public function attributes(): Map
     {
         return $this->attributes;
     }
@@ -58,6 +58,6 @@ final class Log
 
     public function __toString(): string
     {
-        return (string) $this->raw;
+        return $this->raw->toString();
     }
 }

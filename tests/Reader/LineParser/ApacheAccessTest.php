@@ -8,9 +8,9 @@ use Innmind\LogReader\{
     Reader\LineParser,
     Log,
 };
-use Innmind\TimeContinuum\{
-    TimeContinuum\Earth,
-    Timezone\Earth\UTC,
+use Innmind\TimeContinuum\Earth\{
+    Clock,
+    Timezone\UTC,
     Format\ISO8601,
 };
 use Innmind\Http\{
@@ -19,8 +19,8 @@ use Innmind\Http\{
     ProtocolVersion,
 };
 use Innmind\Url\{
-    UrlInterface,
-    Authority\HostInterface,
+    Url,
+    Authority\Host,
 };
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +29,7 @@ class ApacheAccessTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, new ApacheAccess(new Earth));
+        $this->assertInstanceOf(LineParser::class, new ApacheAccess(new Clock));
     }
 
     /**
@@ -37,38 +37,38 @@ class ApacheAccessTest extends TestCase
      */
     public function testInvokation($line, $client, $user, $time, $method, $path, $protocol, $code, $size)
     {
-        $parse = new ApacheAccess(new Earth(new UTC(-8)));
+        $parse = new ApacheAccess(new Clock(new UTC(-8)));
 
-        $log = $parse(new Str($line));
+        $log = $parse(Str::of($line));
 
         $this->assertInstanceOf(Log::class, $log);
         $this->assertSame($time, $log->time()->format(new ISO8601));
         $this->assertInstanceOf(
-            HostInterface::class,
+            Host::class,
             $log->attributes()->get('client')->value()
         );
-        $this->assertSame($client, (string) $log->attributes()->get('client')->value());
-        $this->assertSame($user, (string) $log->attributes()->get('user')->value());
+        $this->assertSame($client, $log->attributes()->get('client')->value()->toString());
+        $this->assertSame($user, $log->attributes()->get('user')->value()->toString());
         $this->assertInstanceOf(
-            UrlInterface::class,
+            Url::class,
             $log->attributes()->get('path')->value()
         );
-        $this->assertSame($path, (string) $log->attributes()->get('path')->value());
+        $this->assertSame($path, $log->attributes()->get('path')->value()->toString());
         $this->assertInstanceOf(
             Method::class,
             $log->attributes()->get('method')->value()
         );
-        $this->assertSame($method, (string) $log->attributes()->get('method')->value());
+        $this->assertSame($method, $log->attributes()->get('method')->value()->toString());
         $this->assertInstanceOf(
             ProtocolVersion::class,
             $log->attributes()->get('protocol')->value()
         );
-        $this->assertSame($protocol, (string) $log->attributes()->get('protocol')->value());
+        $this->assertSame($protocol, $log->attributes()->get('protocol')->value()->toString());
         $this->assertInstanceOf(
             StatusCode::class,
             $log->attributes()->get('code')->value()
         );
-        $this->assertSame($code, (string) $log->attributes()->get('code')->value());
+        $this->assertSame($code, $log->attributes()->get('code')->value()->toString());
         $this->assertSame($size, $log->attributes()->get('size')->value());
     }
 

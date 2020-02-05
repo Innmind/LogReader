@@ -11,14 +11,14 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\TimeContinuumInterface;
+use Innmind\TimeContinuum\Clock;
 use Innmind\Json\{
     Json,
     Exception\Exception,
 };
 use Innmind\Immutable\{
     Str,
-    MapInterface,
+    Map,
 };
 
 final class Monolog implements LineParser
@@ -26,11 +26,11 @@ final class Monolog implements LineParser
     private const FORMAT = '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~';
     private const FORMAT_WITHOUT_EXTRA = '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}])$~';
 
-    private TimeContinuumInterface $clock;
+    private Clock $clock;
     private string $format;
 
     public function __construct(
-        TimeContinuumInterface $clock,
+        Clock $clock,
         string $format = null
     ) {
         $this->clock = $clock;
@@ -42,15 +42,15 @@ final class Monolog implements LineParser
         $parts = $this->decode($line);
 
         $attributes = [
-            new Channel((string) $parts->get('channel')),
-            new Level((string) $parts->get('level')),
-            new Message((string) $parts->get('message')),
+            new Channel($parts->get('channel')->toString()),
+            new Level($parts->get('level')->toString()),
+            new Message($parts->get('message')->toString()),
         ];
 
         try {
             $attributes[] = new Attribute\Attribute(
                 'context',
-                Json::decode((string) $parts->get('context'))
+                Json::decode($parts->get('context')->toString()),
             );
         } catch (Exception $e) {
             // do nothing
@@ -59,20 +59,20 @@ final class Monolog implements LineParser
         try {
             $attributes[] = new Attribute\Attribute(
                 'extra',
-                Json::decode((string) $parts->get('extra')->trim())
+                Json::decode($parts->get('extra')->trim()->toString()),
             );
         } catch (Exception $e) {
             // do nothing
         }
 
         return new Log(
-            $this->clock->at((string) $parts->get('time')),
+            $this->clock->at($parts->get('time')->toString()),
             $line,
-            ...$attributes
+            ...$attributes,
         );
     }
 
-    private function decode(Str $line): MapInterface
+    private function decode(Str $line): Map
     {
         $parts = $line->capture($this->format);
 
@@ -82,6 +82,6 @@ final class Monolog implements LineParser
 
         return $line
             ->capture(self::FORMAT_WITHOUT_EXTRA)
-            ->put('extra', new Str('[]'));
+            ->put('extra', Str::of('[]'));
     }
 }

@@ -8,10 +8,7 @@ use Innmind\LogReader\{
     Log,
 };
 use Innmind\Stream\Readable;
-use Innmind\Immutable\{
-    StreamInterface,
-    Stream,
-};
+use Innmind\Immutable\Sequence;
 
 /**
  * Return a stream of already parsed log lines
@@ -28,21 +25,21 @@ final class Synchronous implements Reader
     /**
      * {@inheritdoc}
      */
-    public function __invoke(Readable $file): StreamInterface
+    public function __invoke(Readable $file): Sequence
     {
         $file->rewind();
-        $stream = new Stream(Log::class);
+        $lines = Sequence::of(Log::class);
 
         while (!$file->end()) {
             $line = $file->readLine();
 
-            if ($line->length() === 0) {
+            if ($line->empty()) {
                 continue;
             }
 
-            $stream = $stream->add(($this->parse)($line));
+            $lines = ($lines)(($this->parse)($line));
         }
 
-        return $stream;
+        return $lines;
     }
 }

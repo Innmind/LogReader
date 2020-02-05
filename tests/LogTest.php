@@ -7,9 +7,9 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute,
 };
-use Innmind\TimeContinuum\PointInTimeInterface;
+use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
-    MapInterface,
+    Map,
     Str,
 };
 use PHPUnit\Framework\TestCase;
@@ -19,16 +19,16 @@ class LogTest extends TestCase
     public function testInterface()
     {
         $log = new Log(
-            $time = $this->createMock(PointInTimeInterface::class),
-            $raw = new Str('foo'),
+            $time = $this->createMock(PointInTime::class),
+            $raw = Str::of('foo'),
             $attribute = new Attribute\Attribute('bar', 42)
         );
 
         $this->assertSame($time, $log->time());
         $this->assertSame($raw, $log->raw());
-        $this->assertInstanceOf(MapInterface::class, $log->attributes());
-        $this->assertSame('string', (string) $log->attributes()->keyType());
-        $this->assertSame(Attribute::class, (string) $log->attributes()->valueType());
+        $this->assertInstanceOf(Map::class, $log->attributes());
+        $this->assertSame('string', $log->attributes()->keyType());
+        $this->assertSame(Attribute::class, $log->attributes()->valueType());
         $this->assertSame($attribute, $log->attributes()->get('bar'));
         $this->assertSame('foo', (string) $log);
     }
@@ -36,12 +36,12 @@ class LogTest extends TestCase
     public function testEquals()
     {
         $log = new Log(
-            $this->createMock(PointInTimeInterface::class),
-            new Str('foo')
+            $this->createMock(PointInTime::class),
+            Str::of('foo')
         );
         $log2 = new Log(
-            $this->createMock(PointInTimeInterface::class),
-            new Str('bar')
+            $this->createMock(PointInTime::class),
+            Str::of('bar')
         );
 
         $this->assertTrue($log->equals($log));
