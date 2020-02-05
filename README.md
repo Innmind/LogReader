@@ -1,10 +1,8 @@
 # Log reader
 
-| `master` | `develop` |
-|----------|-----------|
-| [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=develop) |
-| [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=master) | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/?branch=develop) |
-| [![Build Status](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/LogReader/build-status/master) | [![Build Status](https://scrutinizer-ci.com/g/Innmind/LogReader/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/LogReader/build-status/develop) |
+[![Build Status](https://github.com/Innmind/LogReader/workflows/CI/badge.svg)](https://github.com/Innmind/LogReader/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/Innmind/LogReader/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/LogReader)
+[![Type Coverage](https://shepherd.dev/github/Innmind/LogReader/coverage.svg)](https://shepherd.dev/github/Innmind/LogReader)
 
 Allow you to parse symfony and apache access logs.
 
