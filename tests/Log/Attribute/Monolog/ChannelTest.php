@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\LogReader\Log\Attribute\Monolog;
 
-use Innmind\LogReader\Log\{
-    Attribute\Monolog\Channel,
-    Attribute,
+use Innmind\LogReader\{
+    Log\Attribute\Monolog\Channel,
+    Log\Attribute,
+    Exception\DomainException
 };
 use PHPUnit\Framework\TestCase;
 
@@ -20,11 +21,10 @@ class ChannelTest extends TestCase
         $this->assertSame('request', $channel->value());
     }
 
-    /**
-     * @expectedException Innmind\LogReader\Exception\DomainException
-     */
     public function testThrowWhenEmptyChannel()
     {
+        $this->expectException(DomainException::class);
+
         new Channel('');
     }
 }

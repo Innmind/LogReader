@@ -15,7 +15,10 @@ use Innmind\Immutable\{
     Str,
     Map,
     Stream as GenericStream,
-    MapInterface
+    MapInterface,
+    Exception\OutOfBoundException,
+    Exception\ElementNotFoundException,
+    Exception\LogicException
 };
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +27,7 @@ class StreamTest extends TestCase
     private $stream;
     private $generator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->stream = new Stream($this->generator = function() {
             $i = 0;
@@ -72,11 +75,10 @@ class StreamTest extends TestCase
         $this->assertInstanceOf(Log::class, $this->stream->get(9));
     }
 
-    /**
-     * @expectedException Innmind\Immutable\Exception\OutOfBoundException
-     */
     public function testThrowWhenGettingUnknownIndex()
     {
+        $this->expectException(OutOfBoundException::class);
+
         $this->stream->get(10);
     }
 
@@ -187,11 +189,10 @@ class StreamTest extends TestCase
         )));
     }
 
-    /**
-     * @expectedException Innmind\Immutable\Exception\ElementNotFoundException
-     */
     public function testIndexOf()
     {
+        $this->expectException(ElementNotFoundException::class);
+
         //throws because the file is rewalked each time
         $this->stream->indexOf($this->stream->get(2));
     }
@@ -387,21 +388,19 @@ class StreamTest extends TestCase
         $this->assertNotSame($this->stream->get(2), $this->stream[2]);
     }
 
-    /**
-     * @expectedException Innmind\Immutable\Exception\LogicException
-     * @expectedExceptionMessage You can't modify a stream
-     */
     public function testThrowWhenSettingOnStream()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("You can't modify a stream");
+
         $this->stream[] = $this->stream->first();
     }
 
-    /**
-     * @expectedException Innmind\Immutable\Exception\LogicException
-     * @expectedExceptionMessage You can't modify a stream
-     */
     public function testThrowWhenUnsettingOnStream()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("You can't modify a stream");
+
         unset($this->stream[0]);
     }
 }
