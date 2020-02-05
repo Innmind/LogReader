@@ -7,6 +7,7 @@ use Innmind\LogReader\{
     Log\Attribute as AttributeInterface,
     Exception\EmptyAttributeKeyNotAllowed,
 };
+use Innmind\Immutable\Str;
 
 final class Attribute implements AttributeInterface
 {
@@ -15,7 +16,7 @@ final class Attribute implements AttributeInterface
 
     public function __construct(string $key, $value)
     {
-        if (empty($key)) {
+        if (Str::of($key)->empty()) {
             throw new EmptyAttributeKeyNotAllowed;
         }
 

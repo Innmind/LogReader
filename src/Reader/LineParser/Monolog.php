@@ -29,10 +29,8 @@ final class Monolog implements LineParser
     private Clock $clock;
     private string $format;
 
-    public function __construct(
-        Clock $clock,
-        string $format = null
-    ) {
+    public function __construct(Clock $clock, string $format = null)
+    {
         $this->clock = $clock;
         $this->format = $format ?? self::FORMAT;
     }

@@ -7,6 +7,7 @@ use Innmind\LogReader\{
     Log\Attribute,
     Exception\DomainException,
 };
+use Innmind\Immutable\Str;
 
 final class Channel implements Attribute
 {
@@ -14,7 +15,7 @@ final class Channel implements Attribute
 
     public function __construct(string $value)
     {
-        if (empty($value)) {
+        if (Str::of($value)->empty()) {
             throw new DomainException;
         }
 
