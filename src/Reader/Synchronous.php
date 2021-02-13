@@ -22,9 +22,6 @@ final class Synchronous implements Reader
         $this->parse = $parser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(Readable $file): Sequence
     {
         $file->rewind();

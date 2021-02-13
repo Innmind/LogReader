@@ -27,7 +27,7 @@ class SynchronousTest extends TestCase
     public function testParse()
     {
         $read = new Synchronous(new Monolog(new Clock));
-        $file = new Stream(fopen('fixtures/symfony.log', 'r'));
+        $file = new Stream(\fopen('fixtures/symfony.log', 'r'));
 
         $stream = $read($file);
 
