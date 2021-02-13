@@ -23,9 +23,6 @@ final class OnDemand implements Reader
         $this->parse = $parser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(Readable $file): Sequence
     {
         /** @var Sequence<Log> */

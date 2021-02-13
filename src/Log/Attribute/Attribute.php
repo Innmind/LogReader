@@ -33,9 +33,6 @@ final class Attribute implements AttributeInterface
         return $this->key;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function value()
     {
         return $this->value;
