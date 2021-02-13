@@ -8,10 +8,7 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\{
-    Clock,
-    Format,
-};
+use Innmind\TimeContinuum\Clock;
 use Innmind\Url\{
     Url,
     Authority\Host,
@@ -42,12 +39,7 @@ final class ApacheAccess implements LineParser
         return new Log(
             $this->clock->at(
                 $parts->get('time')->toString(),
-                new class implements Format {
-                    public function toString(): string
-                    {
-                        return 'd/M/Y:H:i:s O';
-                    }
-                },
+                new Apache\TimeFormat,
             ),
             $line,
             new Attribute('user', $parts->get('user')),
