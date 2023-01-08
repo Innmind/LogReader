@@ -21,11 +21,17 @@ final class Reader
 
     public function __invoke(Content $file): Sequence
     {
-        /** @var Sequence<Log> */
+        /**
+         * @psalm-suppress InvalidArgument Due to the empty sequence
+         * @var Sequence<Log>
+         */
         return $file
             ->lines()
             ->map(static fn($line) => $line->str())
             ->filter(static fn($line) => !$line->empty())
-            ->map($this->parse);
+            ->flatMap(fn($line) => ($this->parse)($line)->match(
+                static fn($log) => Sequence::of($log),
+                static fn() => Sequence::of(), // discard the lines we can't parse
+            ));
     }
 }

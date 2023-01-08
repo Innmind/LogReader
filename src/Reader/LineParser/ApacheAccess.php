@@ -37,7 +37,7 @@ final class ApacheAccess implements LineParser
         $this->clock = $clock;
     }
 
-    public function __invoke(Str $line): Log
+    public function __invoke(Str $line): Maybe
     {
         $parts = $line->capture(self::FORMAT);
         $protocol = $parts
@@ -102,10 +102,6 @@ final class ApacheAccess implements LineParser
                 $time,
                 $line,
                 ...$attributes,
-            ))
-            ->match(
-                static fn($log) => $log,
-                static fn() => throw new \RuntimeException,
-            );
+            ));
     }
 }

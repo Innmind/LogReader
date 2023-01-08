@@ -39,7 +39,10 @@ class ApacheAccessTest extends TestCase
     {
         $parse = new ApacheAccess(new Clock(new UTC(-8)));
 
-        $log = $parse(Str::of($line));
+        $log = $parse(Str::of($line))->match(
+            static fn($log) => $log,
+            static fn() => null,
+        );
 
         $this->assertInstanceOf(Log::class, $log);
         $this->assertSame($time, $log->time()->format(new ISO8601));

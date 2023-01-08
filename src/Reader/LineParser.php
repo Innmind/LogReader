@@ -4,9 +4,15 @@ declare(strict_types = 1);
 namespace Innmind\LogReader\Reader;
 
 use Innmind\LogReader\Log;
-use Innmind\Immutable\Str;
+use Innmind\Immutable\{
+    Str,
+    Maybe,
+};
 
 interface LineParser
 {
-    public function __invoke(Str $line): Log;
+    /**
+     * @return Maybe<Log>
+     */
+    public function __invoke(Str $line): Maybe;
 }

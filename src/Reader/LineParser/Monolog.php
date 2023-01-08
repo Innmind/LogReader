@@ -11,7 +11,10 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\Clock;
+use Innmind\TimeContinuum\{
+    Clock,
+    PointInTime,
+};
 use Innmind\Json\{
     Json,
     Exception\Exception,
@@ -36,7 +39,7 @@ final class Monolog implements LineParser
         $this->format = $format ?? self::FORMAT;
     }
 
-    public function __invoke(Str $line): Log
+    public function __invoke(Str $line): Maybe
     {
         $parts = $this->decode($line);
 
@@ -52,13 +55,9 @@ final class Monolog implements LineParser
             ->get('message')
             ->map(static fn($message) => $message->toString())
             ->map(static fn($message) => new Message($message));
-        /** @var list<Attribute> */
+        /** @var Maybe<list<Attribute>> */
         $attributes = Maybe::all($channel, $level, $message)
-            ->map(static fn(Channel $channel, Level $level, Message $message) => [$channel, $level, $message])
-            ->match(
-                static fn($attributes) => $attributes,
-                static fn() => throw new \RuntimeException,
-            );
+            ->map(static fn(Channel $channel, Level $level, Message $message) => [$channel, $level, $message]);
 
         $attributes = $parts
             ->get('context')
@@ -74,10 +73,10 @@ final class Monolog implements LineParser
                 'context',
                 $context,
             ))
-            ->match(
-                static fn($context) => \array_merge($attributes, [$context]),
-                static fn() => $attributes,
-            );
+            ->flatMap(static fn($context) => $attributes->map(
+                static fn($attributes) => \array_merge($attributes, [$context]),
+            ))
+            ->otherwise(static fn() => $attributes);
 
         $attributes = $parts
             ->get('extra')
@@ -93,23 +92,25 @@ final class Monolog implements LineParser
                 'extra',
                 $extra,
             ))
-            ->match(
-                static fn($extra) => \array_merge($attributes, [$extra]),
-                static fn() => $attributes,
-            );
+            ->flatMap(static fn($extra) => $attributes->map(
+                static fn($attributes) => \array_merge($attributes, [$extra]),
+            ))
+            ->otherwise(static fn() => $attributes);
+        $time = $parts
+            ->get('time')
+            ->map(static fn($time) => $time->toString())
+            ->flatMap($this->clock->at(...));
 
-        return new Log(
-            $parts
-                ->get('time')
-                ->map(static fn($time) => $time->toString())
-                ->flatMap($this->clock->at(...))
-                ->match(
-                    static fn($time) => $time,
-                    static fn() => throw new \RuntimeException,
-                ),
-            $line,
-            ...$attributes,
-        );
+        /**
+         * @psalm-suppress NamedArgumentNotAllowed
+         * @psalm-suppress MixedArgument
+         */
+        return Maybe::all($time, $attributes)
+            ->map(static fn(PointInTime $time, array $attributes) => new Log(
+                $time,
+                $line,
+                ...$attributes,
+            ));
     }
 
     /**
