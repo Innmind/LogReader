@@ -46,16 +46,14 @@ final class Monolog implements LineParser
 
         $channel = $parts
             ->get('channel')
-            ->map(static fn($channel) => $channel->toString())
-            ->map(static fn($channel) => new Channel($channel));
+            ->flatMap(Channel::maybe(...));
         $level = $parts
             ->get('level')
             ->map(static fn($level) => $level->toString())
             ->map(static fn($level) => new Level($level));
         $message = $parts
             ->get('message')
-            ->map(static fn($message) => $message->toString())
-            ->map(static fn($message) => new Message($message));
+            ->flatMap(Message::maybe(...));
         /** @var Maybe<Set<Attribute>> */
         $attributes = Maybe::all($channel, $level, $message)
             ->map(static fn(Channel $channel, Level $level, Message $message) => Set::of($channel, $level, $message));
