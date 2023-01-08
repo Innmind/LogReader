@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Reader\LineParser;
+namespace Tests\Innmind\LogReader\LineParser;
 
 use Innmind\LogReader\{
-    Reader\LineParser\Monolog,
-    Reader\LineParser,
+    LineParser\Monolog,
+    LineParser,
     Log,
     Log\Attribute\Monolog\Channel,
     Log\Attribute\Monolog\Level,
@@ -23,7 +23,7 @@ class MonologTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, new Monolog(new Clock));
+        $this->assertInstanceOf(LineParser::class, Monolog::of(new Clock));
     }
 
     /**
@@ -31,59 +31,189 @@ class MonologTest extends TestCase
      */
     public function testInvokation($line, $time, $channel, $level, $message, $context)
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
-        $log = $parse(Str::of($line));
+        $log = $parse(Str::of($line))->match(
+            static fn($log) => $log,
+            static fn() => null,
+        );
 
         $this->assertInstanceOf(Log::class, $log);
         $this->assertSame($time, $log->time()->format(new ISO8601));
-        $this->assertInstanceOf(Channel::class, $log->attributes()->get('channel'));
-        $this->assertSame($channel, $log->attributes()->get('channel')->value());
-        $this->assertInstanceOf(Level::class, $log->attributes()->get('level'));
-        $this->assertSame($level, $log->attributes()->get('level')->value());
-        $this->assertInstanceOf(Message::class, $log->attributes()->get('message'));
-        $this->assertSame($message, $log->attributes()->get('message')->value());
-        $this->assertSame($context, $log->attributes()->get('context')->value());
-        $this->assertSame([], $log->attributes()->get('extra')->value());
-    }
-
-    public function testParseWithCustomRegexp()
-    {
-        $parse = new Monolog(
-            new Clock(new UTC),
-            '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).000000\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~'
+        $this->assertInstanceOf(
+            Channel::class,
+            $log
+                ->attribute('channel')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
         );
-
-        $log = $parse(Str::of('[2017-02-08 07:01:04.000000] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {"exception":"[object] (ErrorException(code: 0): User Deprecated: Not quoting the scalar \"%innmind_neo4j.entity_factory.aggregate.class%\" starting with the \"%\" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. at /Users/baptouuuu/Sites/Innmind/API/vendor/symfony/symfony/src/Symfony/Component/Yaml/Inline.php:325)"} []'));
-
-        $this->assertInstanceOf(Log::class, $log);
-        $this->assertSame('2017-02-08T07:01:04+00:00', $log->time()->format(new ISO8601));
+        $this->assertSame(
+            $channel,
+            $log
+                ->attribute('channel')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertInstanceOf(
+            Level::class,
+            $log
+                ->attribute('level')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $level,
+            $log
+                ->attribute('level')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertInstanceOf(
+            Message::class,
+            $log
+                ->attribute('message')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $message,
+            $log
+                ->attribute('message')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $context,
+            $log
+                ->attribute('context')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            [],
+            $log
+                ->attribute('extra')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
     }
 
     public function testDoesntInjectContextAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
-        $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'));
+        $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'))->match(
+            static fn($log) => $log,
+            static fn() => null,
+        );
 
-        $this->assertTrue($log->attributes()->contains('channel'));
-        $this->assertTrue($log->attributes()->contains('level'));
-        $this->assertTrue($log->attributes()->contains('message'));
-        $this->assertTrue($log->attributes()->contains('extra'));
-        $this->assertFalse($log->attributes()->contains('context'));
+        $this->assertTrue(
+            $log
+                ->attribute('channel')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('level')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('message')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('extra')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertFalse(
+            $log
+                ->attribute('context')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
     }
 
     public function testDoesntInjectExtraAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
-        $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'));
+        $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'))->match(
+            static fn($log) => $log,
+            static fn() => null,
+        );
 
-        $this->assertTrue($log->attributes()->contains('channel'));
-        $this->assertTrue($log->attributes()->contains('level'));
-        $this->assertTrue($log->attributes()->contains('message'));
-        $this->assertTrue($log->attributes()->contains('context'));
-        $this->assertFalse($log->attributes()->contains('extra'));
+        $this->assertTrue(
+            $log
+                ->attribute('channel')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('level')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('message')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attribute('context')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertFalse(
+            $log
+                ->attribute('extra')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
     }
 
     public function lines(): array

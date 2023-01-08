@@ -7,32 +7,39 @@ use Innmind\LogReader\Log\Attribute;
 use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
     Str,
-    Map,
+    Set,
     Sequence,
+    Maybe,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Log
 {
     private PointInTime $time;
     private Str $raw;
-    /** @var Map<string, Attribute> */
-    private Map $attributes;
+    /** @var Set<Attribute> */
+    private Set $attributes;
 
-    public function __construct(
-        PointInTime $time,
-        Str $raw,
-        Attribute ...$attributes
-    ) {
+    /**
+     * @param Set<Attribute> $attributes
+     */
+    private function __construct(PointInTime $time, Str $raw, Set $attributes)
+    {
         $this->time = $time;
         $this->raw = $raw;
-        /** @var Map<string, Attribute> */
-        $this->attributes = Sequence::of(Attribute::class, ...$attributes)->toMapOf(
-            'string',
-            Attribute::class,
-            static function(Attribute $attribute): \Generator {
-                yield $attribute->key() => $attribute;
-            },
-        );
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param Set<Attribute> $attributes
+     */
+    public static function of(PointInTime $time, Str $raw, Set $attributes): self
+    {
+        return new self($time, $raw, $attributes);
     }
 
     public function time(): PointInTime
@@ -46,11 +53,19 @@ final class Log
     }
 
     /**
-     * @return Map<string, Attribute>
+     * @return Set<Attribute>
      */
-    public function attributes(): Map
+    public function attributes(): Set
     {
         return $this->attributes;
+    }
+
+    /**
+     * @return Maybe<Attribute>
+     */
+    public function attribute(string $key): Maybe
+    {
+        return $this->attributes->find(static fn($attribute) => $attribute->key() === $key);
     }
 
     public function equals(self $log): bool

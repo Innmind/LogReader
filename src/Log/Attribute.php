@@ -3,12 +3,11 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader\Log;
 
+/**
+ * @psalm-immutable
+ */
 interface Attribute
 {
     public function key(): string;
-
-    /**
-     * @return mixed
-     */
-    public function value();
+    public function value(): mixed;
 }

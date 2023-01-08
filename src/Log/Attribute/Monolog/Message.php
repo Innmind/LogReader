@@ -3,23 +3,34 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader\Log\Attribute\Monolog;
 
-use Innmind\LogReader\{
-    Log\Attribute,
-    Exception\DomainException,
+use Innmind\LogReader\Log\Attribute;
+use Innmind\Immutable\{
+    Maybe,
+    Str,
 };
-use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class Message implements Attribute
 {
     private string $value;
 
-    public function __construct(string $value)
+    private function __construct(string $value)
     {
-        if (Str::of($value)->empty()) {
-            throw new DomainException;
-        }
-
         $this->value = $value;
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @return Maybe<self>
+     */
+    public static function maybe(Str $value): Maybe
+    {
+        return Maybe::just($value)
+            ->filter(static fn($value) => !$value->empty())
+            ->map(static fn($value) => new self($value->toString()));
     }
 
     public function key(): string

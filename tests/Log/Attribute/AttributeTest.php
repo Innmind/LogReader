@@ -14,7 +14,7 @@ class AttributeTest extends TestCase
 {
     public function testInterface()
     {
-        $attribute = new Attribute('foo', 42);
+        $attribute = Attribute::of('foo', 42);
 
         $this->assertInstanceOf(AttributeInterface::class, $attribute);
         $this->assertSame('foo', $attribute->key());
@@ -25,6 +25,6 @@ class AttributeTest extends TestCase
     {
         $this->expectException(EmptyAttributeKeyNotAllowed::class);
 
-        new Attribute('', 42);
+        Attribute::of('', 42);
     }
 }

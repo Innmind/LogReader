@@ -9,16 +9,16 @@ use Innmind\LogReader\{
 };
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class Attribute implements AttributeInterface
 {
     private string $key;
     /** @var mixed */
     private $value;
 
-    /**
-     * @param mixed $value
-     */
-    public function __construct(string $key, $value)
+    private function __construct(string $key, mixed $value)
     {
         if (Str::of($key)->empty()) {
             throw new EmptyAttributeKeyNotAllowed;
@@ -28,12 +28,24 @@ final class Attribute implements AttributeInterface
         $this->value = $value;
     }
 
+    /**
+     * @psalm-pure
+     *
+     * @param literal-string $key
+     *
+     * @throws EmptyAttributeKeyNotAllowed
+     */
+    public static function of(string $key, mixed $value): self
+    {
+        return new self($key, $value);
+    }
+
     public function key(): string
     {
         return $this->key;
     }
 
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }
