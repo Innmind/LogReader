@@ -25,7 +25,6 @@ final class Log
     ) {
         $this->time = $time;
         $this->raw = $raw;
-        /** @var Map<string, Attribute> */
         $this->attributes = Sequence::of(Attribute::class, ...$attributes)->toMapOf(
             'string',
             Attribute::class,
