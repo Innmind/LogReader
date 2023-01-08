@@ -9,6 +9,9 @@ use Innmind\LogReader\{
 };
 use Psr\Log\LogLevel;
 
+/**
+ * @psalm-immutable
+ */
 final class Level implements Attribute
 {
     private string $value;

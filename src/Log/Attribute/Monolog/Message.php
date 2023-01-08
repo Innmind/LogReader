@@ -9,6 +9,9 @@ use Innmind\LogReader\{
 };
 use Innmind\Immutable\Str;
 
+/**
+ * @psalm-immutable
+ */
 final class Message implements Attribute
 {
     private string $value;

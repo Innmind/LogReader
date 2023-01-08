@@ -11,6 +11,9 @@ use Innmind\Immutable\{
     Sequence,
 };
 
+/**
+ * @psalm-immutable
+ */
 final class Log
 {
     private PointInTime $time;
@@ -29,6 +32,8 @@ final class Log
     }
 
     /**
+     * @psalm-pure
+     *
      * @param Set<Attribute> $attributes
      */
     public static function of(PointInTime $time, Str $raw, Set $attributes): self
