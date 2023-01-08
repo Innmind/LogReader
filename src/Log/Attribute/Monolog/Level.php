@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader\Log\Attribute\Monolog;
 
-use Innmind\LogReader\{
-    Log\Attribute,
-    Exception\DomainException,
+use Innmind\LogReader\Log\Attribute;
+use Innmind\Immutable\{
+    Maybe,
+    Str,
 };
 use Psr\Log\LogLevel;
 
@@ -16,14 +17,23 @@ final class Level implements Attribute
 {
     private string $value;
 
-    public function __construct(string $value)
+    private function __construct(string $value)
     {
-        if (!\defined($level = LogLevel::class.'::'.$value)) {
-            throw new DomainException;
-        }
+        $this->value = $value;
+    }
 
-        /** @var string */
-        $this->value = \constant($level);
+    /**
+     * @psalm-pure
+     *
+     * @return Maybe<self>
+     */
+    public static function maybe(string $value): Maybe
+    {
+        return Maybe::just($value)
+            ->map(static fn($value) => LogLevel::class.'::'.$value)
+            ->filter(\defined(...))
+            ->map(\constant(...))
+            ->map(static fn($value) => new self((string) $value));
     }
 
     public function key(): string

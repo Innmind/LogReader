@@ -50,7 +50,7 @@ final class Monolog implements LineParser
         $level = $parts
             ->get('level')
             ->map(static fn($level) => $level->toString())
-            ->map(static fn($level) => new Level($level));
+            ->flatMap(Level::maybe(...));
         $message = $parts
             ->get('message')
             ->flatMap(Message::maybe(...));
