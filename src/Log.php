@@ -9,6 +9,7 @@ use Innmind\Immutable\{
     Str,
     Set,
     Sequence,
+    Maybe,
 };
 
 /**
@@ -57,6 +58,14 @@ final class Log
     public function attributes(): Set
     {
         return $this->attributes;
+    }
+
+    /**
+     * @return Maybe<Attribute>
+     */
+    public function attribute(string $key): Maybe
+    {
+        return $this->attributes->find(static fn($attribute) => $attribute->key() === $key);
     }
 
     public function equals(self $log): bool

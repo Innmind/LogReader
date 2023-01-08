@@ -49,8 +49,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(
             Host::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'client')
+                ->attribute('client')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -59,8 +58,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $client,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'client')
+                ->attribute('client')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -69,8 +67,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $user,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'user')
+                ->attribute('user')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -79,8 +76,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(
             Url::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'path')
+                ->attribute('path')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -89,8 +85,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $path,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'path')
+                ->attribute('path')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -99,8 +94,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(
             Method::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'method')
+                ->attribute('method')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -109,8 +103,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $method,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'method')
+                ->attribute('method')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -119,8 +112,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(
             ProtocolVersion::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'protocol')
+                ->attribute('protocol')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -129,8 +121,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $protocol,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'protocol')
+                ->attribute('protocol')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -139,8 +130,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(
             StatusCode::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'code')
+                ->attribute('code')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -149,8 +139,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $code,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'code')
+                ->attribute('code')
                 ->match(
                     static fn($attribute) => $attribute->value()->toString(),
                     static fn() => null,
@@ -159,8 +148,7 @@ class ApacheAccessTest extends TestCase
         $this->assertSame(
             $size,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'size')
+                ->attribute('size')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,

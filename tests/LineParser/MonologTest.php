@@ -43,8 +43,7 @@ class MonologTest extends TestCase
         $this->assertInstanceOf(
             Channel::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->attribute('channel')
                 ->match(
                     static fn($attribute) => $attribute,
                     static fn() => null,
@@ -53,8 +52,7 @@ class MonologTest extends TestCase
         $this->assertSame(
             $channel,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->attribute('channel')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -63,8 +61,7 @@ class MonologTest extends TestCase
         $this->assertInstanceOf(
             Level::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->attribute('level')
                 ->match(
                     static fn($attribute) => $attribute,
                     static fn() => null,
@@ -73,8 +70,7 @@ class MonologTest extends TestCase
         $this->assertSame(
             $level,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->attribute('level')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -83,8 +79,7 @@ class MonologTest extends TestCase
         $this->assertInstanceOf(
             Message::class,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->attribute('message')
                 ->match(
                     static fn($attribute) => $attribute,
                     static fn() => null,
@@ -93,8 +88,7 @@ class MonologTest extends TestCase
         $this->assertSame(
             $message,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->attribute('message')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -103,8 +97,7 @@ class MonologTest extends TestCase
         $this->assertSame(
             $context,
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->attribute('context')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -113,8 +106,7 @@ class MonologTest extends TestCase
         $this->assertSame(
             [],
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->attribute('extra')
                 ->match(
                     static fn($attribute) => $attribute->value(),
                     static fn() => null,
@@ -133,8 +125,7 @@ class MonologTest extends TestCase
 
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->attribute('channel')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -142,8 +133,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->attribute('level')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -151,8 +141,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->attribute('message')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -160,8 +149,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->attribute('extra')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -169,8 +157,7 @@ class MonologTest extends TestCase
         );
         $this->assertFalse(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->attribute('context')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -189,8 +176,7 @@ class MonologTest extends TestCase
 
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->attribute('channel')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -198,8 +184,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->attribute('level')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -207,8 +192,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->attribute('message')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -216,8 +200,7 @@ class MonologTest extends TestCase
         );
         $this->assertTrue(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->attribute('context')
                 ->match(
                     static fn() => true,
                     static fn() => false,
@@ -225,8 +208,7 @@ class MonologTest extends TestCase
         );
         $this->assertFalse(
             $log
-                ->attributes()
-                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->attribute('extra')
                 ->match(
                     static fn() => true,
                     static fn() => false,
