@@ -18,10 +18,7 @@ final class Attribute implements AttributeInterface
     /** @var mixed */
     private $value;
 
-    /**
-     * @param mixed $value
-     */
-    public function __construct(string $key, $value)
+    private function __construct(string $key, mixed $value)
     {
         if (Str::of($key)->empty()) {
             throw new EmptyAttributeKeyNotAllowed;
@@ -29,6 +26,18 @@ final class Attribute implements AttributeInterface
 
         $this->key = $key;
         $this->value = $value;
+    }
+
+    /**
+     * @psalm-pure
+     *
+     * @param literal-string $key
+     *
+     * @throws EmptyAttributeKeyNotAllowed
+     */
+    public static function of(string $key, mixed $value): self
+    {
+        return new self($key, $value);
     }
 
     public function key(): string

@@ -70,7 +70,7 @@ final class Monolog implements LineParser
                     return Maybe::nothing();
                 }
             })
-            ->map(static fn($context) => new Attribute\Attribute(
+            ->map(static fn($context) => Attribute\Attribute::of(
                 'context',
                 $context,
             ))
@@ -89,7 +89,7 @@ final class Monolog implements LineParser
                     return Maybe::nothing();
                 }
             })
-            ->map(static fn($extra) => new Attribute\Attribute(
+            ->map(static fn($extra) => Attribute\Attribute::of(
                 'extra',
                 $extra,
             ))

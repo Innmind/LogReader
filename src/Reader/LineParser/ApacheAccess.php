@@ -55,38 +55,38 @@ final class ApacheAccess implements LineParser
                 )
                     ->flatMap(ProtocolVersion::maybe(...)),
             )
-            ->map(static fn($protocol) => new Attribute('protocol', $protocol));
+            ->map(static fn($protocol) => Attribute::of('protocol', $protocol));
         $time = $parts
             ->get('time')
             ->map(static fn($time) => $time->toString())
             ->flatMap(fn($time) => $this->clock->at($time, new Apache\TimeFormat));
         $user = $parts
             ->get('user')
-            ->map(static fn($user) => new Attribute('user', $user));
+            ->map(static fn($user) => Attribute::of('user', $user));
         $client = $parts
             ->get('client')
             ->map(static fn($client) => $client->toString())
             ->map(Host::of(...))
-            ->map(static fn($client) => new Attribute('client', $client));
+            ->map(static fn($client) => Attribute::of('client', $client));
         $method = $parts
             ->get('method')
             ->map(static fn($method) => $method->toString())
             ->flatMap(Method::maybe(...))
-            ->map(static fn($method) => new Attribute('method', $method));
+            ->map(static fn($method) => Attribute::of('method', $method));
         $path = $parts
             ->get('path')
             ->map(static fn($path) => $path->toString())
             ->map(Url::of(...))
-            ->map(static fn($path) => new Attribute('path', $path));
+            ->map(static fn($path) => Attribute::of('path', $path));
         $code = $parts
             ->get('code')
             ->map(static fn($code) => (int) $code->toString())
             ->flatMap(StatusCode::maybe(...))
-            ->map(static fn($code) => new Attribute('code', $code));
+            ->map(static fn($code) => Attribute::of('code', $code));
         $size = $parts
             ->get('size')
             ->map(static fn($size) => (int) $size->toString())
-            ->map(static fn($size) => new Attribute('size', $size));
+            ->map(static fn($size) => Attribute::of('size', $size));
 
         /**
          * @psalm-suppress NamedArgumentNotAllowed
