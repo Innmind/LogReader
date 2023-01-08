@@ -23,7 +23,7 @@ class MonologTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, new Monolog(new Clock));
+        $this->assertInstanceOf(LineParser::class, Monolog::of(new Clock));
     }
 
     /**
@@ -31,7 +31,7 @@ class MonologTest extends TestCase
      */
     public function testInvokation($line, $time, $channel, $level, $message, $context)
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
         $log = $parse(Str::of($line))->match(
             static fn($log) => $log,
@@ -122,25 +122,9 @@ class MonologTest extends TestCase
         );
     }
 
-    public function testParseWithCustomRegexp()
-    {
-        $parse = new Monolog(
-            new Clock(new UTC),
-            '~^\[(?P<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).000000\] (?P<channel>[a-zA-Z-_]+)\.(?P<level>EMERGENCY|ALERT|CRITICAL|ERROR|WARNING|NOTICE|INFO|DEBUG): (?P<message>.+) (?P<context>[\{\[].*[\]\}]) (?P<extra>[\{\[].*[\]\}])$~',
-        );
-
-        $log = $parse(Str::of('[2017-02-08 07:01:04.000000] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {"exception":"[object] (ErrorException(code: 0): User Deprecated: Not quoting the scalar \"%innmind_neo4j.entity_factory.aggregate.class%\" starting with the \"%\" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. at /Users/baptouuuu/Sites/Innmind/API/vendor/symfony/symfony/src/Symfony/Component/Yaml/Inline.php:325)"} []'))->match(
-            static fn($log) => $log,
-            static fn() => null,
-        );
-
-        $this->assertInstanceOf(Log::class, $log);
-        $this->assertSame('2017-02-08T07:01:04+00:00', $log->time()->format(new ISO8601));
-    }
-
     public function testDoesntInjectContextAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'))->match(
             static fn($log) => $log,
@@ -196,7 +180,7 @@ class MonologTest extends TestCase
 
     public function testDoesntInjectExtraAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = new Monolog(new Clock(new UTC));
+        $parse = Monolog::of(new Clock(new UTC));
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'))->match(
             static fn($log) => $log,

@@ -34,7 +34,7 @@ final class Monolog implements LineParser
     private Clock $clock;
     private string $format;
 
-    public function __construct(Clock $clock, string $format = null)
+    private function __construct(Clock $clock, string $format = null)
     {
         $this->clock = $clock;
         $this->format = $format ?? self::FORMAT;
@@ -109,6 +109,16 @@ final class Monolog implements LineParser
                 ),
             ),
         );
+    }
+
+    public static function of(Clock $clock): self
+    {
+        return new self($clock, self::FORMAT);
+    }
+
+    public static function withoutExtra(Clock $clock): self
+    {
+        return new self($clock, self::FORMAT_WITHOUT_EXTRA);
     }
 
     /**

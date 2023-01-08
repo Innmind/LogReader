@@ -13,7 +13,7 @@ final class Reader
 {
     private LineParser $parse;
 
-    public function __construct(LineParser $parser)
+    private function __construct(LineParser $parser)
     {
         $this->parse = $parser;
     }
@@ -32,5 +32,10 @@ final class Reader
                 static fn($log) => Sequence::of($log),
                 static fn() => Sequence::of(), // discard the lines we can't parse
             ));
+    }
+
+    public static function of(LineParser $parser): self
+    {
+        return new self($parser);
     }
 }

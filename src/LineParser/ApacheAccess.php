@@ -33,7 +33,7 @@ final class ApacheAccess implements LineParser
 
     private Clock $clock;
 
-    public function __construct(Clock $clock)
+    private function __construct(Clock $clock)
     {
         $this->clock = $clock;
     }
@@ -107,5 +107,10 @@ final class ApacheAccess implements LineParser
                 $line,
                 Set::of(...$attributes),
             ));
+    }
+
+    public static function of(Clock $clock): self
+    {
+        return new self($clock);
     }
 }

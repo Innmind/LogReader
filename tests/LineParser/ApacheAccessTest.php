@@ -29,7 +29,7 @@ class ApacheAccessTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, new ApacheAccess(new Clock));
+        $this->assertInstanceOf(LineParser::class, ApacheAccess::of(new Clock));
     }
 
     /**
@@ -37,7 +37,7 @@ class ApacheAccessTest extends TestCase
      */
     public function testInvokation($line, $client, $user, $time, $method, $path, $protocol, $code, $size)
     {
-        $parse = new ApacheAccess(new Clock(new UTC(-8)));
+        $parse = ApacheAccess::of(new Clock(new UTC(-8)));
 
         $log = $parse(Str::of($line))->match(
             static fn($log) => $log,

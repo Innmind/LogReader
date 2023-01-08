@@ -18,7 +18,7 @@ class ReaderTest extends TestCase
 {
     public function testParse()
     {
-        $read = new Reader(new Monolog(new Clock));
+        $read = Reader::of(Monolog::of(new Clock));
         $file = Content\OfStream::of(Stream::of(\fopen('fixtures/symfony.log', 'r')));
 
         $stream = $read($file);
