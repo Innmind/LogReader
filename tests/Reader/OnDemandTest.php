@@ -10,6 +10,7 @@ use Innmind\LogReader\{
     Log,
 };
 use Innmind\TimeContinuum\Earth\Clock;
+use Innmind\Filesystem\File\Content;
 use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -27,16 +28,25 @@ class OnDemandTest extends TestCase
     public function testParse()
     {
         $read = new OnDemand(new Monolog(new Clock));
-        $file = new Stream(\fopen('fixtures/symfony.log', 'r'));
+        $file = Content\OfStream::of(Stream::of(\fopen('fixtures/symfony.log', 'r')));
 
         $stream = $read($file);
 
         $this->assertInstanceOf(Sequence::class, $stream);
-        $this->assertSame(Log::class, (string) $stream->type());
         $this->assertCount(5000, $stream);
         $this->assertSame(
             'User Deprecated: Use Str class instead',
-            $stream->last()->attributes()->get('message')->value(),
+            $stream
+                ->last()
+                ->flatMap(
+                    static fn($log) => $log
+                        ->attributes()
+                        ->find(static fn($attribute) => $attribute->key() === 'message'),
+                )
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
     }
 }

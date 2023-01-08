@@ -9,7 +9,7 @@ use Innmind\LogReader\{
 };
 use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
-    Map,
+    Set,
     Str,
 };
 use PHPUnit\Framework\TestCase;
@@ -26,10 +26,8 @@ class LogTest extends TestCase
 
         $this->assertSame($time, $log->time());
         $this->assertSame($raw, $log->raw());
-        $this->assertInstanceOf(Map::class, $log->attributes());
-        $this->assertSame('string', $log->attributes()->keyType());
-        $this->assertSame(Attribute::class, $log->attributes()->valueType());
-        $this->assertSame($attribute, $log->attributes()->get('bar'));
+        $this->assertInstanceOf(Set::class, $log->attributes());
+        $this->assertSame([$attribute], $log->attributes()->toList());
         $this->assertSame('foo', $log->toString());
     }
 

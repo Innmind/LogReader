@@ -8,7 +8,10 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\Clock;
+use Innmind\TimeContinuum\{
+    Clock,
+    PointInTime,
+};
 use Innmind\Url\{
     Url,
     Authority\Host,
@@ -18,7 +21,10 @@ use Innmind\Http\{
     Message\Method,
     Message\StatusCode,
 };
-use Innmind\Immutable\Str;
+use Innmind\Immutable\{
+    Str,
+    Maybe,
+};
 
 final class ApacheAccess implements LineParser
 {
@@ -34,26 +40,72 @@ final class ApacheAccess implements LineParser
     public function __invoke(Str $line): Log
     {
         $parts = $line->capture(self::FORMAT);
-        $protocol = $parts->get('protocol')->split('.');
+        $protocol = $parts
+            ->get('protocol')
+            ->map(static fn($protocol) => $protocol->split('.'))
+            ->flatMap(
+                static fn($parts) => Maybe::all(
+                    $parts
+                        ->first()
+                        ->map(static fn($major) => (int) $major->toString()),
+                    $parts
+                        ->last()
+                        ->map(static fn($minor) => (int) $minor->toString()),
+                )
+                    ->flatMap(ProtocolVersion::maybe(...)),
+            )
+            ->map(static fn($protocol) => new Attribute('protocol', $protocol));
+        $time = $parts
+            ->get('time')
+            ->map(static fn($time) => $time->toString())
+            ->flatMap(fn($time) => $this->clock->at($time, new Apache\TimeFormat));
+        $user = $parts
+            ->get('user')
+            ->map(static fn($user) => new Attribute('user', $user));
+        $client = $parts
+            ->get('client')
+            ->map(static fn($client) => $client->toString())
+            ->map(Host::of(...))
+            ->map(static fn($client) => new Attribute('client', $client));
+        $method = $parts
+            ->get('method')
+            ->map(static fn($method) => $method->toString())
+            ->flatMap(Method::maybe(...))
+            ->map(static fn($method) => new Attribute('method', $method));
+        $path = $parts
+            ->get('path')
+            ->map(static fn($path) => $path->toString())
+            ->map(Url::of(...))
+            ->map(static fn($path) => new Attribute('path', $path));
+        $code = $parts
+            ->get('code')
+            ->map(static fn($code) => (int) $code->toString())
+            ->flatMap(StatusCode::maybe(...))
+            ->map(static fn($code) => new Attribute('code', $code));
+        $size = $parts
+            ->get('size')
+            ->map(static fn($size) => (int) $size->toString())
+            ->map(static fn($size) => new Attribute('size', $size));
 
-        return new Log(
-            $this->clock->at(
-                $parts->get('time')->toString(),
-                new Apache\TimeFormat,
-            ),
-            $line,
-            new Attribute('user', $parts->get('user')),
-            new Attribute('client', Host::of($parts->get('client')->toString())),
-            new Attribute('method', new Method($parts->get('method')->toString())),
-            new Attribute('path', Url::of($parts->get('path')->toString())),
-            new Attribute('protocol', new ProtocolVersion(
-                (int) $protocol->first()->toString(),
-                (int) $protocol->last()->toString(),
-            )),
-            new Attribute('code', new StatusCode(
-                (int) $parts->get('code')->toString(),
-            )),
-            new Attribute('size', (int) $parts->get('size')->toString()),
-        );
+        /** @psalm-suppress NamedArgumentNotAllowed */
+        return Maybe::all(
+            $time,
+            $user,
+            $client,
+            $method,
+            $path,
+            $protocol,
+            $code,
+            $size,
+        )
+            ->map(static fn(PointInTime $time, Attribute ...$attributes) => new Log(
+                $time,
+                $line,
+                ...$attributes,
+            ))
+            ->match(
+                static fn($log) => $log,
+                static fn() => throw new \RuntimeException,
+            );
     }
 }

@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader,
     Log,
 };
-use Innmind\Stream\Readable;
+use Innmind\Filesystem\File\Content;
 use Innmind\Immutable\Sequence;
 
 /**
@@ -22,22 +22,13 @@ final class Synchronous implements Reader
         $this->parse = $parser;
     }
 
-    public function __invoke(Readable $file): Sequence
+    public function __invoke(Content $file): Sequence
     {
-        $file->rewind();
         /** @var Sequence<Log> */
-        $lines = Sequence::of(Log::class);
-
-        while (!$file->end()) {
-            $line = $file->readLine();
-
-            if ($line->empty()) {
-                continue;
-            }
-
-            $lines = ($lines)(($this->parse)($line));
-        }
-
-        return $lines;
+        return $file
+            ->lines()
+            ->map(static fn($line) => $line->str())
+            ->filter(static fn($line) => !$line->empty())
+            ->map($this->parse);
     }
 }

@@ -37,14 +37,86 @@ class MonologTest extends TestCase
 
         $this->assertInstanceOf(Log::class, $log);
         $this->assertSame($time, $log->time()->format(new ISO8601));
-        $this->assertInstanceOf(Channel::class, $log->attributes()->get('channel'));
-        $this->assertSame($channel, $log->attributes()->get('channel')->value());
-        $this->assertInstanceOf(Level::class, $log->attributes()->get('level'));
-        $this->assertSame($level, $log->attributes()->get('level')->value());
-        $this->assertInstanceOf(Message::class, $log->attributes()->get('message'));
-        $this->assertSame($message, $log->attributes()->get('message')->value());
-        $this->assertSame($context, $log->attributes()->get('context')->value());
-        $this->assertSame([], $log->attributes()->get('extra')->value());
+        $this->assertInstanceOf(
+            Channel::class,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $channel,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertInstanceOf(
+            Level::class,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $level,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertInstanceOf(
+            Message::class,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->match(
+                    static fn($attribute) => $attribute,
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $message,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $context,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            [],
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
     }
 
     public function testParseWithCustomRegexp()
@@ -66,11 +138,51 @@ class MonologTest extends TestCase
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'));
 
-        $this->assertTrue($log->attributes()->contains('channel'));
-        $this->assertTrue($log->attributes()->contains('level'));
-        $this->assertTrue($log->attributes()->contains('message'));
-        $this->assertTrue($log->attributes()->contains('extra'));
-        $this->assertFalse($log->attributes()->contains('context'));
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertFalse(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
     }
 
     public function testDoesntInjectExtraAttributeWhenFailingToDecodeJsonString()
@@ -79,11 +191,51 @@ class MonologTest extends TestCase
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'));
 
-        $this->assertTrue($log->attributes()->contains('channel'));
-        $this->assertTrue($log->attributes()->contains('level'));
-        $this->assertTrue($log->attributes()->contains('message'));
-        $this->assertTrue($log->attributes()->contains('context'));
-        $this->assertFalse($log->attributes()->contains('extra'));
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'channel')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'level')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'message')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertTrue(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'context')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
+        $this->assertFalse(
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'extra')
+                ->match(
+                    static fn() => true,
+                    static fn() => false,
+                ),
+        );
     }
 
     public function lines(): array

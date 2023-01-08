@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Reader,
     Log,
 };
-use Innmind\Stream\Readable;
+use Innmind\Filesystem\File\Content;
 use Innmind\Immutable\Sequence;
 
 /**
@@ -23,24 +23,13 @@ final class OnDemand implements Reader
         $this->parse = $parser;
     }
 
-    public function __invoke(Readable $file): Sequence
+    public function __invoke(Content $file): Sequence
     {
         /** @var Sequence<Log> */
-        return Sequence::lazy(
-            Log::class,
-            function() use ($file): \Generator {
-                $file->rewind();
-
-                while (!$file->end()) {
-                    $line = $file->readLine();
-
-                    if ($line->empty()) {
-                        continue;
-                    }
-
-                    yield ($this->parse)($line);
-                }
-            },
-        );
+        return $file
+            ->lines()
+            ->map(static fn($line) => $line->str())
+            ->filter(static fn($line) => !$line->empty())
+            ->map($this->parse);
     }
 }

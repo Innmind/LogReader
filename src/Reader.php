@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader;
 
-use Innmind\Stream\Readable;
+use Innmind\Filesystem\File\Content;
 use Innmind\Immutable\Sequence;
 
 interface Reader
@@ -11,5 +11,5 @@ interface Reader
     /**
      * @return Sequence<Log>
      */
-    public function __invoke(Readable $file): Sequence;
+    public function __invoke(Content $file): Sequence;
 }

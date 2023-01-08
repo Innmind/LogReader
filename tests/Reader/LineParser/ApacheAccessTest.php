@@ -45,31 +45,124 @@ class ApacheAccessTest extends TestCase
         $this->assertSame($time, $log->time()->format(new ISO8601));
         $this->assertInstanceOf(
             Host::class,
-            $log->attributes()->get('client')->value(),
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'client')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
-        $this->assertSame($client, $log->attributes()->get('client')->value()->toString());
-        $this->assertSame($user, $log->attributes()->get('user')->value()->toString());
+        $this->assertSame(
+            $client,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'client')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $user,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'user')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
         $this->assertInstanceOf(
             Url::class,
-            $log->attributes()->get('path')->value(),
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'path')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
-        $this->assertSame($path, $log->attributes()->get('path')->value()->toString());
+        $this->assertSame(
+            $path,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'path')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
         $this->assertInstanceOf(
             Method::class,
-            $log->attributes()->get('method')->value(),
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'method')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
-        $this->assertSame($method, $log->attributes()->get('method')->value()->toString());
+        $this->assertSame(
+            $method,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'method')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
         $this->assertInstanceOf(
             ProtocolVersion::class,
-            $log->attributes()->get('protocol')->value(),
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'protocol')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
-        $this->assertSame($protocol, $log->attributes()->get('protocol')->value()->toString());
+        $this->assertSame(
+            $protocol,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'protocol')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
         $this->assertInstanceOf(
             StatusCode::class,
-            $log->attributes()->get('code')->value(),
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'code')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
         );
-        $this->assertSame($code, $log->attributes()->get('code')->value()->toString());
-        $this->assertSame($size, $log->attributes()->get('size')->value());
+        $this->assertSame(
+            $code,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'code')
+                ->match(
+                    static fn($attribute) => $attribute->value()->toString(),
+                    static fn() => null,
+                ),
+        );
+        $this->assertSame(
+            $size,
+            $log
+                ->attributes()
+                ->find(static fn($attribute) => $attribute->key() === 'size')
+                ->match(
+                    static fn($attribute) => $attribute->value(),
+                    static fn() => null,
+                ),
+        );
     }
 
     public function lines(): array

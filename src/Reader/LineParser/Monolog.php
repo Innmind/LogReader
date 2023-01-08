@@ -19,6 +19,7 @@ use Innmind\Json\{
 use Innmind\Immutable\{
     Str,
     Map,
+    Maybe,
 };
 
 final class Monolog implements LineParser
@@ -39,39 +40,80 @@ final class Monolog implements LineParser
     {
         $parts = $this->decode($line);
 
-        $attributes = [
-            new Channel($parts->get('channel')->toString()),
-            new Level($parts->get('level')->toString()),
-            new Message($parts->get('message')->toString()),
-        ];
+        $channel = $parts
+            ->get('channel')
+            ->map(static fn($channel) => $channel->toString())
+            ->map(static fn($channel) => new Channel($channel));
+        $level = $parts
+            ->get('level')
+            ->map(static fn($level) => $level->toString())
+            ->map(static fn($level) => new Level($level));
+        $message = $parts
+            ->get('message')
+            ->map(static fn($message) => $message->toString())
+            ->map(static fn($message) => new Message($message));
+        /** @var list<Attribute> */
+        $attributes = Maybe::all($channel, $level, $message)
+            ->map(static fn(Channel $channel, Level $level, Message $message) => [$channel, $level, $message])
+            ->match(
+                static fn($attributes) => $attributes,
+                static fn() => throw new \RuntimeException,
+            );
 
-        try {
-            $attributes[] = new Attribute\Attribute(
+        $attributes = $parts
+            ->get('context')
+            ->map(static fn($context) => $context->toString())
+            ->flatMap(static function($context): mixed {
+                try {
+                    return Maybe::just(Json::decode($context));
+                } catch (Exception $e) {
+                    return Maybe::nothing();
+                }
+            })
+            ->map(static fn($context) => new Attribute\Attribute(
                 'context',
-                Json::decode($parts->get('context')->toString()),
+                $context,
+            ))
+            ->match(
+                static fn($context) => \array_merge($attributes, [$context]),
+                static fn() => $attributes,
             );
-        } catch (Exception $e) {
-            // do nothing
-        }
 
-        try {
-            $attributes[] = new Attribute\Attribute(
+        $attributes = $parts
+            ->get('extra')
+            ->map(static fn($extra) => $extra->toString())
+            ->flatMap(static function($extra): mixed {
+                try {
+                    return Maybe::just(Json::decode($extra));
+                } catch (Exception $e) {
+                    return Maybe::nothing();
+                }
+            })
+            ->map(static fn($extra) => new Attribute\Attribute(
                 'extra',
-                Json::decode($parts->get('extra')->trim()->toString()),
+                $extra,
+            ))
+            ->match(
+                static fn($extra) => \array_merge($attributes, [$extra]),
+                static fn() => $attributes,
             );
-        } catch (Exception $e) {
-            // do nothing
-        }
 
         return new Log(
-            $this->clock->at($parts->get('time')->toString()),
+            $parts
+                ->get('time')
+                ->map(static fn($time) => $time->toString())
+                ->flatMap($this->clock->at(...))
+                ->match(
+                    static fn($time) => $time,
+                    static fn() => throw new \RuntimeException,
+                ),
             $line,
             ...$attributes,
         );
     }
 
     /**
-     * @return Map<scalar, Str>
+     * @return Map<array-key, Str>
      */
     private function decode(Str $line): Map
     {

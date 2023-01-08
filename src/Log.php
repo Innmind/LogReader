@@ -7,7 +7,7 @@ use Innmind\LogReader\Log\Attribute;
 use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
     Str,
-    Map,
+    Set,
     Sequence,
 };
 
@@ -15,9 +15,12 @@ final class Log
 {
     private PointInTime $time;
     private Str $raw;
-    /** @var Map<string, Attribute> */
-    private Map $attributes;
+    /** @var Set<Attribute> */
+    private Set $attributes;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(
         PointInTime $time,
         Str $raw,
@@ -25,13 +28,7 @@ final class Log
     ) {
         $this->time = $time;
         $this->raw = $raw;
-        $this->attributes = Sequence::of(Attribute::class, ...$attributes)->toMapOf(
-            'string',
-            Attribute::class,
-            static function(Attribute $attribute): \Generator {
-                yield $attribute->key() => $attribute;
-            },
-        );
+        $this->attributes = Set::of(...$attributes);
     }
 
     public function time(): PointInTime
@@ -45,9 +42,9 @@ final class Log
     }
 
     /**
-     * @return Map<string, Attribute>
+     * @return Set<Attribute>
      */
-    public function attributes(): Map
+    public function attributes(): Set
     {
         return $this->attributes;
     }
