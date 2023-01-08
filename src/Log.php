@@ -21,7 +21,7 @@ final class Log
     public function __construct(
         PointInTime $time,
         Str $raw,
-        Attribute ...$attributes
+        Attribute ...$attributes,
     ) {
         $this->time = $time;
         $this->raw = $raw;

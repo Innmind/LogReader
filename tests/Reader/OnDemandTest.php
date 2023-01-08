@@ -20,7 +20,7 @@ class OnDemandTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new OnDemand(new Monolog(new Clock))
+            new OnDemand(new Monolog(new Clock)),
         );
     }
 
@@ -36,7 +36,7 @@ class OnDemandTest extends TestCase
         $this->assertCount(5000, $stream);
         $this->assertSame(
             'User Deprecated: Use Str class instead',
-            $stream->last()->attributes()->get('message')->value()
+            $stream->last()->attributes()->get('message')->value(),
         );
     }
 }

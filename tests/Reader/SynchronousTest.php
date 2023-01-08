@@ -20,7 +20,7 @@ class SynchronousTest extends TestCase
     {
         $this->assertInstanceOf(
             Reader::class,
-            new Synchronous(new Monolog(new Clock))
+            new Synchronous(new Monolog(new Clock)),
         );
     }
 
