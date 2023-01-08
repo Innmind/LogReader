@@ -33,7 +33,7 @@ final class Attribute implements AttributeInterface
         return $this->key;
     }
 
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }

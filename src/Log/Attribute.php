@@ -6,9 +6,5 @@ namespace Innmind\LogReader\Log;
 interface Attribute
 {
     public function key(): string;
-
-    /**
-     * @return mixed
-     */
-    public function value();
+    public function value(): mixed;
 }
