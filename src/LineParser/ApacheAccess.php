@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Reader\LineParser;
+namespace Innmind\LogReader\LineParser;
 
 use Innmind\LogReader\{
-    Reader\LineParser,
+    LineParser,
     Log,
     Log\Attribute\Attribute,
 };

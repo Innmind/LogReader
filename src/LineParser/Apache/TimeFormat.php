@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Innmind\LogReader\Reader\LineParser\Apache;
+namespace Innmind\LogReader\LineParser\Apache;
 
 use Innmind\TimeContinuum\Format;
 

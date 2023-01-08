@@ -5,7 +5,7 @@ namespace Tests\Innmind\LogReader;
 
 use Innmind\LogReader\{
     Reader,
-    Reader\LineParser\Monolog,
+    LineParser\Monolog,
     Log,
 };
 use Innmind\TimeContinuum\Earth\Clock;

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Reader\LineParser;
+namespace Tests\Innmind\LogReader\LineParser;
 
 use Innmind\LogReader\{
-    Reader\LineParser\Monolog,
-    Reader\LineParser,
+    LineParser\Monolog,
+    LineParser,
     Log,
     Log\Attribute\Monolog\Channel,
     Log\Attribute\Monolog\Level,

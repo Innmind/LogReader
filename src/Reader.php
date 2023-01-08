@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\LogReader;
 
-use Innmind\LogReader\Reader\LineParser;
 use Innmind\Filesystem\File\Content;
 use Innmind\Immutable\Sequence;
 

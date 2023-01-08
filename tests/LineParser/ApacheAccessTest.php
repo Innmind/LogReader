@@ -1,11 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Reader\LineParser;
+namespace Tests\Innmind\LogReader\LineParser;
 
 use Innmind\LogReader\{
-    Reader\LineParser\ApacheAccess,
-    Reader\LineParser,
+    LineParser\ApacheAccess,
+    LineParser,
     Log,
 };
 use Innmind\TimeContinuum\Earth\{
