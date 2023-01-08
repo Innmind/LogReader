@@ -19,16 +19,16 @@ final class Log
     private Set $attributes;
 
     /**
-     * @no-named-arguments
+     * @param Set<Attribute> $attributes
      */
     public function __construct(
         PointInTime $time,
         Str $raw,
-        Attribute ...$attributes,
+        Set $attributes,
     ) {
         $this->time = $time;
         $this->raw = $raw;
-        $this->attributes = Set::of(...$attributes);
+        $this->attributes = $attributes;
     }
 
     public function time(): PointInTime

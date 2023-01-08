@@ -24,6 +24,7 @@ use Innmind\Http\{
 use Innmind\Immutable\{
     Str,
     Maybe,
+    Set,
 };
 
 final class ApacheAccess implements LineParser
@@ -87,7 +88,10 @@ final class ApacheAccess implements LineParser
             ->map(static fn($size) => (int) $size->toString())
             ->map(static fn($size) => new Attribute('size', $size));
 
-        /** @psalm-suppress NamedArgumentNotAllowed */
+        /**
+         * @psalm-suppress NamedArgumentNotAllowed
+         * @psalm-suppress InvalidArgument
+         */
         return Maybe::all(
             $time,
             $user,
@@ -101,7 +105,7 @@ final class ApacheAccess implements LineParser
             ->map(static fn(PointInTime $time, Attribute ...$attributes) => new Log(
                 $time,
                 $line,
-                ...$attributes,
+                Set::of(...$attributes),
             ));
     }
 }

@@ -21,13 +21,13 @@ class LogTest extends TestCase
         $log = new Log(
             $time = $this->createMock(PointInTime::class),
             $raw = Str::of('foo'),
-            $attribute = new Attribute\Attribute('bar', 42),
+            $attributes = Set::of(new Attribute\Attribute('bar', 42)),
         );
 
         $this->assertSame($time, $log->time());
         $this->assertSame($raw, $log->raw());
         $this->assertInstanceOf(Set::class, $log->attributes());
-        $this->assertSame([$attribute], $log->attributes()->toList());
+        $this->assertSame($attributes, $log->attributes());
         $this->assertSame('foo', $log->toString());
     }
 
@@ -36,10 +36,12 @@ class LogTest extends TestCase
         $log = new Log(
             $this->createMock(PointInTime::class),
             Str::of('foo'),
+            Set::of(),
         );
         $log2 = new Log(
             $this->createMock(PointInTime::class),
             Str::of('bar'),
+            Set::of(),
         );
 
         $this->assertTrue($log->equals($log));

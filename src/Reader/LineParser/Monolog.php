@@ -23,6 +23,7 @@ use Innmind\Immutable\{
     Str,
     Map,
     Maybe,
+    Set,
 };
 
 final class Monolog implements LineParser
@@ -55,9 +56,9 @@ final class Monolog implements LineParser
             ->get('message')
             ->map(static fn($message) => $message->toString())
             ->map(static fn($message) => new Message($message));
-        /** @var Maybe<list<Attribute>> */
+        /** @var Maybe<Set<Attribute>> */
         $attributes = Maybe::all($channel, $level, $message)
-            ->map(static fn(Channel $channel, Level $level, Message $message) => [$channel, $level, $message]);
+            ->map(static fn(Channel $channel, Level $level, Message $message) => Set::of($channel, $level, $message));
 
         $attributes = $parts
             ->get('context')
@@ -74,7 +75,7 @@ final class Monolog implements LineParser
                 $context,
             ))
             ->flatMap(static fn($context) => $attributes->map(
-                static fn($attributes) => \array_merge($attributes, [$context]),
+                static fn($attributes) => ($attributes)($context),
             ))
             ->otherwise(static fn() => $attributes);
 
@@ -93,7 +94,7 @@ final class Monolog implements LineParser
                 $extra,
             ))
             ->flatMap(static fn($extra) => $attributes->map(
-                static fn($attributes) => \array_merge($attributes, [$extra]),
+                static fn($attributes) => ($attributes)($extra),
             ))
             ->otherwise(static fn() => $attributes);
         $time = $parts
@@ -101,16 +102,15 @@ final class Monolog implements LineParser
             ->map(static fn($time) => $time->toString())
             ->flatMap($this->clock->at(...));
 
-        /**
-         * @psalm-suppress NamedArgumentNotAllowed
-         * @psalm-suppress MixedArgument
-         */
-        return Maybe::all($time, $attributes)
-            ->map(static fn(PointInTime $time, array $attributes) => new Log(
-                $time,
-                $line,
-                ...$attributes,
-            ));
+        return $time->flatMap(
+            static fn($time) => $attributes->map(
+                static fn($attributes) => new Log(
+                    $time,
+                    $line,
+                    $attributes,
+                ),
+            ),
+        );
     }
 
     /**
