@@ -16,14 +16,6 @@ use PHPUnit\Framework\TestCase;
 
 class ReaderTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Reader::class,
-            new Reader(new Monolog(new Clock)),
-        );
-    }
-
     public function testParse()
     {
         $read = new Reader(new Monolog(new Clock));
