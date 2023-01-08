@@ -1,12 +1,11 @@
 <?php
 declare(strict_types = 1);
 
-namespace Tests\Innmind\LogReader\Reader;
+namespace Tests\Innmind\LogReader;
 
 use Innmind\LogReader\{
-    Reader\Synchronous,
-    Reader\LineParser\Monolog,
     Reader,
+    Reader\LineParser\Monolog,
     Log,
 };
 use Innmind\TimeContinuum\Earth\Clock;
@@ -15,19 +14,19 @@ use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
 
-class SynchronousTest extends TestCase
+class ReaderTest extends TestCase
 {
     public function testInterface()
     {
         $this->assertInstanceOf(
             Reader::class,
-            new Synchronous(new Monolog(new Clock)),
+            new Reader(new Monolog(new Clock)),
         );
     }
 
     public function testParse()
     {
-        $read = new Synchronous(new Monolog(new Clock));
+        $read = new Reader(new Monolog(new Clock));
         $file = Content\OfStream::of(Stream::of(\fopen('fixtures/symfony.log', 'r')));
 
         $stream = $read($file);
