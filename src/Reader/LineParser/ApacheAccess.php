@@ -102,7 +102,7 @@ final class ApacheAccess implements LineParser
             $code,
             $size,
         )
-            ->map(static fn(PointInTime $time, Attribute ...$attributes) => new Log(
+            ->map(static fn(PointInTime $time, Attribute ...$attributes) => Log::of(
                 $time,
                 $line,
                 Set::of(...$attributes),

@@ -18,7 +18,7 @@ class LogTest extends TestCase
 {
     public function testInterface()
     {
-        $log = new Log(
+        $log = Log::of(
             $time = $this->createMock(PointInTime::class),
             $raw = Str::of('foo'),
             $attributes = Set::of(new Attribute\Attribute('bar', 42)),
@@ -33,12 +33,12 @@ class LogTest extends TestCase
 
     public function testEquals()
     {
-        $log = new Log(
+        $log = Log::of(
             $this->createMock(PointInTime::class),
             Str::of('foo'),
             Set::of(),
         );
-        $log2 = new Log(
+        $log2 = Log::of(
             $this->createMock(PointInTime::class),
             Str::of('bar'),
             Set::of(),

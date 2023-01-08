@@ -104,7 +104,7 @@ final class Monolog implements LineParser
 
         return $time->flatMap(
             static fn($time) => $attributes->map(
-                static fn($attributes) => new Log(
+                static fn($attributes) => Log::of(
                     $time,
                     $line,
                     $attributes,

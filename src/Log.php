@@ -21,14 +21,19 @@ final class Log
     /**
      * @param Set<Attribute> $attributes
      */
-    public function __construct(
-        PointInTime $time,
-        Str $raw,
-        Set $attributes,
-    ) {
+    private function __construct(PointInTime $time, Str $raw, Set $attributes)
+    {
         $this->time = $time;
         $this->raw = $raw;
         $this->attributes = $attributes;
+    }
+
+    /**
+     * @param Set<Attribute> $attributes
+     */
+    public static function of(PointInTime $time, Str $raw, Set $attributes): self
+    {
+        return new self($time, $raw, $attributes);
     }
 
     public function time(): PointInTime
