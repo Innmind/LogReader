@@ -18,8 +18,8 @@ use Innmind\Url\{
 };
 use Innmind\Http\{
     ProtocolVersion,
-    Message\Method,
-    Message\StatusCode,
+    Method,
+    Response\StatusCode,
 };
 use Innmind\Immutable\{
     Str,

@@ -10,6 +10,7 @@ use Innmind\LogReader\{
 };
 use Innmind\TimeContinuum\Earth\Clock;
 use Innmind\Filesystem\File\Content;
+use Innmind\IO\IO;
 use Innmind\Stream\Readable\Stream;
 use Innmind\Immutable\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +20,11 @@ class ReaderTest extends TestCase
     public function testParse()
     {
         $read = Reader::of(Monolog::of(new Clock));
-        $file = Content\OfStream::of(Stream::of(\fopen('fixtures/symfony.log', 'r')));
+        $file = Content::oneShot(
+            IO::of(static fn() => null)->readable()->wrap(
+                Stream::of(\fopen('fixtures/symfony.log', 'r')),
+            ),
+        );
 
         $stream = $read($file);
 
