@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.3.0 - 2023-10-22
+
+### Changed
+
+- Requires `innmind/filesystem:~7.0`
+- Requires `innmind/http:~7.0`
+
+### Removed
+
+- Support for PHP `8.1`
+
 ## 5.2.0 - 2023-09-23
 
 ### Added

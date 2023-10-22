@@ -14,8 +14,8 @@ use Innmind\TimeContinuum\Earth\{
     Format\ISO8601,
 };
 use Innmind\Http\{
-    Message\Method,
-    Message\StatusCode,
+    Method,
+    Response\StatusCode,
     ProtocolVersion,
 };
 use Innmind\Url\{

@@ -14,13 +14,13 @@
         "issues": "http://github.com/Innmind/LogReader/issues"
     },
     "require": {
-        "php": "~8.1",
+        "php": "~8.2",
         "innmind/immutable": "~4.9|~5.0",
         "innmind/time-continuum": "~3.1",
         "psr/log": "^3.0",
         "innmind/url": "~4.1",
-        "innmind/http": "~5.3|~6.0",
-        "innmind/filesystem": "~6.1",
+        "innmind/http": "~7.0",
+        "innmind/filesystem": "~7.0",
         "innmind/json": "^1.1"
     },
     "autoload": {
