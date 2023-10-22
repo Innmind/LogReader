@@ -14,7 +14,7 @@
         "issues": "http://github.com/Innmind/LogReader/issues"
     },
     "require": {
-        "php": "~8.1",
+        "php": "~8.2",
         "innmind/immutable": "~4.9|~5.0",
         "innmind/time-continuum": "~3.1",
         "psr/log": "^3.0",
