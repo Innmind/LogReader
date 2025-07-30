@@ -7,19 +7,19 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute,
 };
-use Innmind\TimeContinuum\PointInTime;
+use Innmind\TimeContinuum\Earth\PointInTime\Now;
 use Innmind\Immutable\{
     Set,
     Str,
 };
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class LogTest extends TestCase
 {
     public function testInterface()
     {
         $log = Log::of(
-            $time = $this->createMock(PointInTime::class),
+            $time = new Now,
             $raw = Str::of('foo'),
             $attributes = Set::of(Attribute\Attribute::of('bar', 42)),
         );
@@ -34,12 +34,12 @@ class LogTest extends TestCase
     public function testEquals()
     {
         $log = Log::of(
-            $this->createMock(PointInTime::class),
+            new Now,
             Str::of('foo'),
             Set::of(),
         );
         $log2 = Log::of(
-            $this->createMock(PointInTime::class),
+            new Now,
             Str::of('bar'),
             Set::of(),
         );
