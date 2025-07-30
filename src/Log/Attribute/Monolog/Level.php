@@ -33,11 +33,13 @@ final class Level implements Attribute
             ->map(static fn($value) => new self((string) $value));
     }
 
+    #[\Override]
     public function key(): string
     {
         return 'level';
     }
 
+    #[\Override]
     public function value(): string
     {
         return $this->value;

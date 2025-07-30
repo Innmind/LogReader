@@ -38,6 +38,7 @@ final class ApacheAccess implements LineParser
         $this->clock = $clock;
     }
 
+    #[\Override]
     public function __invoke(Str $line): Maybe
     {
         $parts = $line->capture(self::FORMAT);

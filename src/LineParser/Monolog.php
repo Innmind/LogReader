@@ -37,6 +37,7 @@ final class Monolog implements LineParser
         $this->format = $format ?? self::FORMAT;
     }
 
+    #[\Override]
     public function __invoke(Str $line): Maybe
     {
         $parts = $this->decode($line);
