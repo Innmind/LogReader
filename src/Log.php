@@ -8,7 +8,6 @@ use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
     Str,
     Set,
-    Sequence,
     Maybe,
 };
 

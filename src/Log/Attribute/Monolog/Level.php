@@ -4,10 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\LogReader\Log\Attribute\Monolog;
 
 use Innmind\LogReader\Log\Attribute;
-use Innmind\Immutable\{
-    Maybe,
-    Str,
-};
+use Innmind\Immutable\Maybe;
 use Psr\Log\LogLevel;
 
 /**

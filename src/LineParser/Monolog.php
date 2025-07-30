@@ -11,10 +11,7 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\{
-    Clock,
-    PointInTime,
-};
+use Innmind\TimeContinuum\Clock;
 use Innmind\Json\{
     Json,
     Exception\Exception,
