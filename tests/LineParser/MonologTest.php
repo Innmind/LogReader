@@ -11,10 +11,9 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\Earth\{
+use Innmind\TimeContinuum\{
     Clock,
-    Format\ISO8601,
-    Timezone\UTC,
+    Format,
 };
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,13 +23,15 @@ class MonologTest extends TestCase
 {
     public function testInterface()
     {
-        $this->assertInstanceOf(LineParser::class, Monolog::of(new Clock));
+        $this->assertInstanceOf(LineParser::class, Monolog::of(Clock::live()));
     }
 
     #[DataProvider('lines')]
     public function testInvokation($line, $time, $channel, $level, $message, $context)
     {
-        $parse = Monolog::of(new Clock(new UTC));
+        $parse = Monolog::of(
+            Clock::live()->switch(static fn($timezones) => $timezones->utc()),
+        );
 
         $log = $parse(Str::of($line))->match(
             static fn($log) => $log,
@@ -38,7 +39,7 @@ class MonologTest extends TestCase
         );
 
         $this->assertInstanceOf(Log::class, $log);
-        $this->assertSame($time, $log->time()->format(new ISO8601));
+        $this->assertSame($time, $log->time()->format(Format::iso8601()));
         $this->assertInstanceOf(
             Channel::class,
             $log
@@ -115,7 +116,9 @@ class MonologTest extends TestCase
 
     public function testDoesntInjectContextAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = Monolog::of(new Clock(new UTC));
+        $parse = Monolog::of(
+            Clock::live()->switch(static fn($timezones) => $timezones->utc()),
+        );
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. {] []'))->match(
             static fn($log) => $log,
@@ -166,7 +169,9 @@ class MonologTest extends TestCase
 
     public function testDoesntInjectExtraAttributeWhenFailingToDecodeJsonString()
     {
-        $parse = Monolog::of(new Clock(new UTC));
+        $parse = Monolog::of(
+            Clock::live()->switch(static fn($timezones) => $timezones->utc()),
+        );
 
         $log = $parse(Str::of('[2017-02-08 07:01:04] php.INFO: User Deprecated: Not quoting the scalar "%innmind_neo4j.entity_factory.aggregate.class%" starting with the "%" indicator character is deprecated since Symfony 3.1 and will throw a ParseException in 4.0. [] {]'))->match(
             static fn($log) => $log,
