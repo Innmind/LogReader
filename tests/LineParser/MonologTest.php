@@ -17,7 +17,8 @@ use Innmind\TimeContinuum\Earth\{
     Timezone\UTC,
 };
 use Innmind\Immutable\Str;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class MonologTest extends TestCase
 {
@@ -26,9 +27,7 @@ class MonologTest extends TestCase
         $this->assertInstanceOf(LineParser::class, Monolog::of(new Clock));
     }
 
-    /**
-     * @dataProvider lines
-     */
+    #[DataProvider('lines')]
     public function testInvokation($line, $time, $channel, $level, $message, $context)
     {
         $parse = Monolog::of(new Clock(new UTC));
@@ -216,7 +215,7 @@ class MonologTest extends TestCase
         );
     }
 
-    public function lines(): array
+    public static function lines(): array
     {
         return [
             [

@@ -13,7 +13,7 @@ use Innmind\IO\IO;
 use Innmind\Stream\Readable\Stream;
 use Innmind\Stream\Watch\Select;
 use Innmind\Immutable\Sequence;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ReaderTest extends TestCase
 {

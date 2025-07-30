@@ -23,7 +23,8 @@ use Innmind\Url\{
     Authority\Host,
 };
 use Innmind\Immutable\Str;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ApacheAccessTest extends TestCase
 {
@@ -32,9 +33,7 @@ class ApacheAccessTest extends TestCase
         $this->assertInstanceOf(LineParser::class, ApacheAccess::of(new Clock));
     }
 
-    /**
-     * @dataProvider lines
-     */
+    #[DataProvider('lines')]
     public function testInvokation($line, $client, $user, $time, $method, $path, $protocol, $code, $size)
     {
         $parse = ApacheAccess::of(new Clock(new UTC(-8)));
@@ -156,7 +155,7 @@ class ApacheAccessTest extends TestCase
         );
     }
 
-    public function lines(): array
+    public static function lines(): array
     {
         return [
             [
