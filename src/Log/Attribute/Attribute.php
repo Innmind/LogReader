@@ -40,11 +40,13 @@ final class Attribute implements AttributeInterface
         return new self($key, $value);
     }
 
+    #[\Override]
     public function key(): string
     {
         return $this->key;
     }
 
+    #[\Override]
     public function value(): mixed
     {
         return $this->value;

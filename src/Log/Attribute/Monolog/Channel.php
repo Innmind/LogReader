@@ -33,11 +33,13 @@ final class Channel implements Attribute
             ->map(static fn($value) => new self($value->toString()));
     }
 
+    #[\Override]
     public function key(): string
     {
         return 'channel';
     }
 
+    #[\Override]
     public function value(): string
     {
         return $this->value;

@@ -10,6 +10,7 @@ use Innmind\TimeContinuum\Format;
  */
 final class TimeFormat implements Format
 {
+    #[\Override]
     public function toString(): string
     {
         return 'd/M/Y:H:i:s O';
