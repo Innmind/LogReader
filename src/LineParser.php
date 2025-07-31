@@ -13,5 +13,6 @@ interface LineParser
     /**
      * @return Maybe<Log>
      */
+    #[\NoDiscard]
     public function __invoke(Str $line): Maybe;
 }

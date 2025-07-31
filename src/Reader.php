@@ -18,6 +18,7 @@ final class Reader
         $this->parse = $parser;
     }
 
+    #[\NoDiscard]
     public function __invoke(Content $file): Sequence
     {
         /**
