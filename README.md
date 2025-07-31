@@ -63,6 +63,8 @@ $os
 
 The above example will print all messages that were logged at a critical level.
 
-**Note**: if parsing the `context` or `extra` attributes of a monolog line fail they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
+> [!NOTE]
+> If parsing the `context` or `extra` attributes of a monolog line fail they won't be exposed as attributes in the `Log` object. This behaviour is implemented to not make the whole parsing fail due to this error.
 
-**Note 2**: if a line can't be parsed for some reason it will simply be ignored and not exposed. Again this behaviour is implemented to not make the whole parsing fail.
+> [!NOTE]
+> If a line can't be parsed for some reason it will simply be ignored and not exposed. Again this behaviour is implemented to not make the whole parsing fail.
