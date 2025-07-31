@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute,
 };
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class LevelTest extends TestCase
 {

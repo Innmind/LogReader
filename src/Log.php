@@ -8,7 +8,6 @@ use Innmind\TimeContinuum\PointInTime;
 use Innmind\Immutable\{
     Str,
     Set,
-    Sequence,
     Maybe,
 };
 
@@ -42,11 +41,13 @@ final class Log
         return new self($time, $raw, $attributes);
     }
 
+    #[\NoDiscard]
     public function time(): PointInTime
     {
         return $this->time;
     }
 
+    #[\NoDiscard]
     public function raw(): Str
     {
         return $this->raw;
@@ -55,6 +56,7 @@ final class Log
     /**
      * @return Set<Attribute>
      */
+    #[\NoDiscard]
     public function attributes(): Set
     {
         return $this->attributes;
@@ -63,16 +65,19 @@ final class Log
     /**
      * @return Maybe<Attribute>
      */
+    #[\NoDiscard]
     public function attribute(string $key): Maybe
     {
         return $this->attributes->find(static fn($attribute) => $attribute->key() === $key);
     }
 
+    #[\NoDiscard]
     public function equals(self $log): bool
     {
         return $this->raw->equals($log->raw());
     }
 
+    #[\NoDiscard]
     public function toString(): string
     {
         return $this->raw->toString();

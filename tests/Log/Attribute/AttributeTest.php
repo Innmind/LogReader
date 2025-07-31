@@ -8,7 +8,7 @@ use Innmind\LogReader\{
     Log\Attribute as AttributeInterface,
     Exception\EmptyAttributeKeyNotAllowed
 };
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class AttributeTest extends TestCase
 {

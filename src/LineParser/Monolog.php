@@ -13,8 +13,9 @@ use Innmind\LogReader\{
 };
 use Innmind\TimeContinuum\{
     Clock,
-    PointInTime,
+    Format,
 };
+use Innmind\Validation\Is;
 use Innmind\Json\{
     Json,
     Exception\Exception,
@@ -34,12 +35,13 @@ final class Monolog implements LineParser
     private Clock $clock;
     private string $format;
 
-    private function __construct(Clock $clock, string $format = null)
+    private function __construct(Clock $clock, ?string $format = null)
     {
         $this->clock = $clock;
         $this->format = $format ?? self::FORMAT;
     }
 
+    #[\Override]
     public function __invoke(Str $line): Maybe
     {
         $parts = $this->decode($line);
@@ -98,7 +100,8 @@ final class Monolog implements LineParser
         $time = $parts
             ->get('time')
             ->map(static fn($time) => $time->toString())
-            ->flatMap($this->clock->at(...));
+            ->keep(Is::string()->nonEmpty()->asPredicate())
+            ->flatMap($this->clock->ofFormat(Format::of('Y-m-d H:i:s'))->at(...));
 
         return $time->flatMap(
             static fn($time) => $attributes->map(

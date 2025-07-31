@@ -8,6 +8,8 @@ namespace Innmind\LogReader\Log;
  */
 interface Attribute
 {
+    #[\NoDiscard]
     public function key(): string;
+    #[\NoDiscard]
     public function value(): mixed;
 }

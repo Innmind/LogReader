@@ -11,11 +11,13 @@ use Innmind\LogReader\{
 use Innmind\TimeContinuum\{
     Clock,
     PointInTime,
+    Format,
 };
 use Innmind\Url\{
     Url,
     Authority\Host,
 };
+use Innmind\Validation\Is;
 use Innmind\Http\{
     ProtocolVersion,
     Method,
@@ -38,6 +40,7 @@ final class ApacheAccess implements LineParser
         $this->clock = $clock;
     }
 
+    #[\Override]
     public function __invoke(Str $line): Maybe
     {
         $parts = $line->capture(self::FORMAT);
@@ -59,7 +62,8 @@ final class ApacheAccess implements LineParser
         $time = $parts
             ->get('time')
             ->map(static fn($time) => $time->toString())
-            ->flatMap(fn($time) => $this->clock->at($time, new Apache\TimeFormat));
+            ->keep(Is::string()->nonEmpty()->asPredicate())
+            ->flatMap($this->clock->ofFormat(Format::of('d/M/Y:H:i:s O'))->at(...));
         $user = $parts
             ->get('user')
             ->map(static fn($user) => Attribute::of('user', $user));

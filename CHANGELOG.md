@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.4.0 - 2025-07-31
+
+### Changed
+
+- Requires `innmind/foundation:~1.3`
+
+### Fixed
+
+- PHP `8.4` deprecations
+
 ## 5.3.0 - 2023-10-22
 
 ### Changed
