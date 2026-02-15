@@ -12,11 +12,8 @@ use Psr\Log\LogLevel;
  */
 final class Level implements Attribute
 {
-    private string $value;
-
-    private function __construct(string $value)
+    private function __construct(private string $value)
     {
-        $this->value = $value;
     }
 
     /**

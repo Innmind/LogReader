@@ -16,19 +16,14 @@ use Innmind\Immutable\{
  */
 final class Log
 {
-    private Point $time;
-    private Str $raw;
-    /** @var Set<Attribute> */
-    private Set $attributes;
-
     /**
      * @param Set<Attribute> $attributes
      */
-    private function __construct(Point $time, Str $raw, Set $attributes)
-    {
-        $this->time = $time;
-        $this->raw = $raw;
-        $this->attributes = $attributes;
+    private function __construct(
+        private Point $time,
+        private Str $raw,
+        private Set $attributes,
+    ) {
     }
 
     /**

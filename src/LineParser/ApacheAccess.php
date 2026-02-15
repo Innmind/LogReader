@@ -33,11 +33,8 @@ final class ApacheAccess implements LineParser
 {
     private const FORMAT = '~^(?P<client>\S+) - (?P<user>\S+) \[(?P<time>\d{2}/[a-zA-Z]{3}/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4})] "(?P<method>[A-Z]{3,}) (?P<path>.+) HTTP/(?P<protocol>\d\.\d)" (?P<code>\d+) (?P<size>\d+)$~';
 
-    private Clock $clock;
-
-    private function __construct(Clock $clock)
+    private function __construct(private Clock $clock)
     {
-        $this->clock = $clock;
     }
 
     #[\Override]

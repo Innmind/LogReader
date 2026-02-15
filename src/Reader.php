@@ -11,11 +11,8 @@ use Innmind\Immutable\Sequence;
  */
 final class Reader
 {
-    private LineParser $parse;
-
-    private function __construct(LineParser $parser)
+    private function __construct(private LineParser $parse)
     {
-        $this->parse = $parser;
     }
 
     #[\NoDiscard]
