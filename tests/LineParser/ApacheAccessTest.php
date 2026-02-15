@@ -8,7 +8,7 @@ use Innmind\LogReader\{
     LineParser,
     Log,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
     Format,
 };
@@ -220,7 +220,7 @@ class ApacheAccessTest extends TestCase
                 '-',
                 '2004-03-08T00:23:12+00:00',
                 'GET',
-                '/twiki/bin/oops/TWiki/AppendixFileSystem?template=oopsmore¶m1=1.12¶m2=1.12',
+                '/twiki/bin/oops/TWiki/AppendixFileSystem?template=oopsmore%C2%B6m1=1.12%C2%B6m2=1.12',
                 '1.1',
                 '200',
                 11382,

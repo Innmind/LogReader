@@ -8,9 +8,9 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
-    PointInTime,
+    Point,
     Format,
 };
 use Innmind\Url\{
@@ -63,7 +63,9 @@ final class ApacheAccess implements LineParser
             ->get('time')
             ->map(static fn($time) => $time->toString())
             ->keep(Is::string()->nonEmpty()->asPredicate())
-            ->flatMap($this->clock->ofFormat(Format::of('d/M/Y:H:i:s O'))->at(...));
+            ->attempt(static fn() => new \Exception)
+            ->flatMap($this->clock->ofFormat(Format::of('d/M/Y:H:i:s O'))->at(...))
+            ->maybe();
         $user = $parts
             ->get('user')
             ->map(static fn($user) => Attribute::of('user', $user));
@@ -106,7 +108,7 @@ final class ApacheAccess implements LineParser
             $code,
             $size,
         )
-            ->map(static fn(PointInTime $time, Attribute ...$attributes) => Log::of(
+            ->map(static fn(Point $time, Attribute ...$attributes) => Log::of(
                 $time,
                 $line,
                 Set::of(...$attributes),
