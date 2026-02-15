@@ -7,7 +7,7 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute,
 };
-use Innmind\TimeContinuum\PointInTime;
+use Innmind\Time\Point;
 use Innmind\Immutable\{
     Set,
     Str,
@@ -19,7 +19,7 @@ class LogTest extends TestCase
     public function testInterface()
     {
         $log = Log::of(
-            $time = PointInTime::now(),
+            $time = Point::now(),
             $raw = Str::of('foo'),
             $attributes = Set::of(Attribute\Attribute::of('bar', 42)),
         );
@@ -34,12 +34,12 @@ class LogTest extends TestCase
     public function testEquals()
     {
         $log = Log::of(
-            PointInTime::now(),
+            Point::now(),
             Str::of('foo'),
             Set::of(),
         );
         $log2 = Log::of(
-            PointInTime::now(),
+            Point::now(),
             Str::of('bar'),
             Set::of(),
         );

@@ -11,7 +11,7 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
     Format,
 };

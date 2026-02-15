@@ -8,7 +8,7 @@ use Innmind\LogReader\{
     LineParser,
     Log,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
     Format,
 };
@@ -24,6 +24,7 @@ use Innmind\Url\{
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Innmind\BlackBox\PHPUnit\Framework\TestCase;
+use Composer\InstalledVersions;
 
 class ApacheAccessTest extends TestCase
 {
@@ -35,6 +36,16 @@ class ApacheAccessTest extends TestCase
     #[DataProvider('lines')]
     public function testInvokation($line, $client, $user, $time, $method, $path, $protocol, $code, $size)
     {
+        if (\is_array($path)) {
+            [$v84, $v85] = $path;
+
+            if (\str_starts_with(InstalledVersions::getVersion('innmind/url'), '5.0')) {
+                $path = $v84;
+            } else {
+                $path = $v85;
+            }
+        }
+
         $parse = ApacheAccess::of(
             Clock::live()->switch(static fn($timezones) => $timezones->utc()),
         );
@@ -220,7 +231,10 @@ class ApacheAccessTest extends TestCase
                 '-',
                 '2004-03-08T00:23:12+00:00',
                 'GET',
-                '/twiki/bin/oops/TWiki/AppendixFileSystem?template=oopsmore¶m1=1.12¶m2=1.12',
+                [
+                    '/twiki/bin/oops/TWiki/AppendixFileSystem?template=oopsmore¶m1=1.12¶m2=1.12',
+                    '/twiki/bin/oops/TWiki/AppendixFileSystem?template=oopsmore%C2%B6m1=1.12%C2%B6m2=1.12',
+                ],
                 '1.1',
                 '200',
                 11382,

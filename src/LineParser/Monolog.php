@@ -11,7 +11,7 @@ use Innmind\LogReader\{
     Log\Attribute\Monolog\Level,
     Log\Attribute\Monolog\Message,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
     Format,
 };
@@ -101,7 +101,9 @@ final class Monolog implements LineParser
             ->get('time')
             ->map(static fn($time) => $time->toString())
             ->keep(Is::string()->nonEmpty()->asPredicate())
-            ->flatMap($this->clock->ofFormat(Format::of('Y-m-d H:i:s'))->at(...));
+            ->attempt(static fn() => new \Exception)
+            ->flatMap($this->clock->ofFormat(Format::of('Y-m-d H:i:s'))->at(...))
+            ->maybe();
 
         return $time->flatMap(
             static fn($time) => $attributes->map(

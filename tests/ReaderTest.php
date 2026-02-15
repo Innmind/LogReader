@@ -7,9 +7,9 @@ use Innmind\LogReader\{
     Reader,
     LineParser\Monolog,
 };
-use Innmind\TimeContinuum\Clock;
+use Innmind\Time\Clock;
 use Innmind\Filesystem\{
-    Adapter\Filesystem,
+    Adapter,
     Name,
 };
 use Innmind\Url\Path;
@@ -21,7 +21,8 @@ class ReaderTest extends TestCase
     public function testParse()
     {
         $read = Reader::of(Monolog::of(Clock::live()));
-        $file = Filesystem::mount(Path::of('fixtures/'))
+        $file = Adapter::mount(Path::of('fixtures/'))
+            ->unwrap()
             ->get(Name::of('symfony.log'))
             ->match(
                 static fn($file) => $file->content(),
@@ -31,6 +32,6 @@ class ReaderTest extends TestCase
         $stream = $read($file);
 
         $this->assertInstanceOf(Sequence::class, $stream);
-        $this->assertCount(5000, $stream);
+        $this->assertSame(5000, $stream->size());
     }
 }
