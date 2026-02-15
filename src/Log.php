@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\LogReader;
 
 use Innmind\LogReader\Log\Attribute;
-use Innmind\TimeContinuum\PointInTime;
+use Innmind\Time\Point;
 use Innmind\Immutable\{
     Str,
     Set,
@@ -16,19 +16,14 @@ use Innmind\Immutable\{
  */
 final class Log
 {
-    private PointInTime $time;
-    private Str $raw;
-    /** @var Set<Attribute> */
-    private Set $attributes;
-
     /**
      * @param Set<Attribute> $attributes
      */
-    private function __construct(PointInTime $time, Str $raw, Set $attributes)
-    {
-        $this->time = $time;
-        $this->raw = $raw;
-        $this->attributes = $attributes;
+    private function __construct(
+        private Point $time,
+        private Str $raw,
+        private Set $attributes,
+    ) {
     }
 
     /**
@@ -36,13 +31,13 @@ final class Log
      *
      * @param Set<Attribute> $attributes
      */
-    public static function of(PointInTime $time, Str $raw, Set $attributes): self
+    public static function of(Point $time, Str $raw, Set $attributes): self
     {
         return new self($time, $raw, $attributes);
     }
 
     #[\NoDiscard]
-    public function time(): PointInTime
+    public function time(): Point
     {
         return $this->time;
     }

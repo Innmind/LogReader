@@ -8,9 +8,9 @@ use Innmind\LogReader\{
     Log,
     Log\Attribute\Attribute,
 };
-use Innmind\TimeContinuum\{
+use Innmind\Time\{
     Clock,
-    PointInTime,
+    Point,
     Format,
 };
 use Innmind\Url\{
@@ -33,11 +33,8 @@ final class ApacheAccess implements LineParser
 {
     private const FORMAT = '~^(?P<client>\S+) - (?P<user>\S+) \[(?P<time>\d{2}/[a-zA-Z]{3}/\d{4}:\d{2}:\d{2}:\d{2} [+\-]\d{4})] "(?P<method>[A-Z]{3,}) (?P<path>.+) HTTP/(?P<protocol>\d\.\d)" (?P<code>\d+) (?P<size>\d+)$~';
 
-    private Clock $clock;
-
-    private function __construct(Clock $clock)
+    private function __construct(private Clock $clock)
     {
-        $this->clock = $clock;
     }
 
     #[\Override]
@@ -63,7 +60,9 @@ final class ApacheAccess implements LineParser
             ->get('time')
             ->map(static fn($time) => $time->toString())
             ->keep(Is::string()->nonEmpty()->asPredicate())
-            ->flatMap($this->clock->ofFormat(Format::of('d/M/Y:H:i:s O'))->at(...));
+            ->attempt(static fn() => new \Exception)
+            ->flatMap($this->clock->ofFormat(Format::of('d/M/Y:H:i:s O'))->at(...))
+            ->maybe();
         $user = $parts
             ->get('user')
             ->map(static fn($user) => Attribute::of('user', $user));
@@ -106,7 +105,7 @@ final class ApacheAccess implements LineParser
             $code,
             $size,
         )
-            ->map(static fn(PointInTime $time, Attribute ...$attributes) => Log::of(
+            ->map(static fn(Point $time, Attribute ...$attributes) => Log::of(
                 $time,
                 $line,
                 Set::of(...$attributes),
