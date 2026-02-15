@@ -24,6 +24,7 @@ use Innmind\Url\{
 use Innmind\Immutable\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Innmind\BlackBox\PHPUnit\Framework\TestCase;
+use Composer\InstalledVersions;
 
 class ApacheAccessTest extends TestCase
 {
@@ -38,7 +39,7 @@ class ApacheAccessTest extends TestCase
         if (\is_array($path)) {
             [$v84, $v85] = $path;
 
-            if (\str_starts_with(\PHP_VERSION, '8.4')) {
+            if (\str_starts_with(InstalledVersions::getVersion('innmind/url'), '5.0')) {
                 $path = $v84;
             } else {
                 $path = $v85;
